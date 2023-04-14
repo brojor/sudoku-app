@@ -27,7 +27,7 @@ const selected = computed(() => puzzle.selection === props.cellId)
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 18px;
+  font-size: 6vw;
   font-weight: 500;
   cursor: pointer;
 }

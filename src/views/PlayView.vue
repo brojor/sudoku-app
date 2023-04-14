@@ -1,18 +1,23 @@
 <script setup lang="ts">
 import ABoard from '@/components/ABoard.vue';
+import ActionButtons from '@/components/ActionButtons.vue';
+import NumButtons from '@/components/NumButtons.vue';
 </script>
 
 <template>
   <main>
     <ABoard />
+    <NumButtons />
+		<ActionButtons />
   </main>
 </template>
 
 <style scoped>
 main {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;;
   height: 100vh;
 }
 </style>

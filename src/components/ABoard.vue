@@ -41,8 +41,10 @@ const handleClick = (row: number, col: number, cell: Cell) => {
   grid-template-columns: repeat(9, 1fr);
   grid-template-rows: repeat(9, 1fr);
   grid-gap: 1px;
-  width: 300px;
-  height: 300px;
+  width: 100vw;
+  aspect-ratio: 1;
+  padding: 0 2px;
+  margin-top: 8vh;
 }
 
 .cell {
@@ -62,14 +64,14 @@ const handleClick = (row: number, col: number, cell: Cell) => {
 }
 
 .cell:not(:nth-child(9n))::before {
-  width: 1px;
+  width: 1.5px;
   right: -1px;
   top: 20%;
   bottom: 20%;
 }
 
 .cell:not(:nth-last-child(-n + 9))::after {
-  height: 1px;
+  height: 1.5px;
   bottom: -1px;
   left: 20%;
   right: 20%;
