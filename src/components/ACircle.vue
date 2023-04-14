@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { usePuzzleStore } from '@/stores/puzzle';
+import { usePuzzleStore, type Cell } from '@/stores/puzzle';
 import { computed } from 'vue';
 
 const props = defineProps<{
-	cellId: string
+  cellId: string
+  cell: Cell
 }>()
 
 const puzzle = usePuzzleStore()
@@ -12,7 +13,9 @@ const selected = computed(() => puzzle.selection === props.cellId)
 </script>
 
 <template>
-	<div class="circle" :class="{selected}"></div>
+  <div class="circle" :class="{selected, given: cell.isGiven}">
+    <template v-if="cell.value">{{ cell.value }}</template>
+  </div>
 </template>
 
 <style scoped>
@@ -23,14 +26,18 @@ const selected = computed(() => puzzle.selection === props.cellId)
   display: flex;
   justify-content: center;
   align-items: center;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
 }
 
 .selected {
-	background-color: green;
+  background-color: green;
 }
 
 .given {
-	background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.15);
   color: var(--color-text);
 }
 

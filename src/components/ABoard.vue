@@ -5,15 +5,15 @@ import type { Cell } from '@/stores/puzzle';
 
 const puzzle = usePuzzleStore();
 const initialBoard = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [5, 3, 0, 0, 7, 0, 0, 0, 0],
+  [6, 0, 0, 1, 9, 5, 0, 0, 0],
+  [0, 9, 8, 0, 0, 0, 0, 6, 0],
+  [8, 0, 0, 0, 6, 0, 0, 0, 3],
+  [4, 0, 0, 8, 0, 3, 0, 0, 1],
+  [7, 0, 0, 0, 2, 0, 0, 0, 6],
+  [0, 6, 0, 0, 0, 0, 2, 8, 0],
+  [0, 0, 0, 4, 1, 9, 0, 0, 5],
+  [0, 0, 0, 0, 8, 0, 0, 7, 9],
 ];
 
 puzzle.initBoard(initialBoard)
@@ -29,7 +29,7 @@ const handleClick = (row: number, col: number, cell: Cell) => {
     <template v-for="(row, rowIdx) in puzzle.board">
       <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" 
         class="cell" :row="rowIdx + 1" :col="colIdx + 1">
-        <ACircle :cell-id="`${rowIdx}${colIdx}`" @click="handleClick(rowIdx, colIdx, cell)"/>
+        <ACircle :cell-id="`${rowIdx}${colIdx}`" :cell="cell" @click="handleClick(rowIdx, colIdx, cell)"/>
       </div>
     </template>
   </div>
