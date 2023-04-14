@@ -9,13 +9,17 @@ export interface Cell {
   possibleValues?: Omit<Digit, 0>[]
 }
 
-
 export const usePuzzleStore = defineStore('puzzle', () => {
   const board = ref<Cell[][]>([])
+  const selection = ref<string | null>(null)
 
   const initBoard = (puzzle: number[][]) => {
     board.value = puzzle.map(row => row.map(value => ({ value, isGiven: value !== 0 }))) as Cell[][]
   }
 
-  return { board, initBoard }
+  const selectCell = (cellId: string) => {
+    selection.value = selection.value === cellId ? null : cellId
+  }
+
+  return { board, initBoard, selection, selectCell }
 })
