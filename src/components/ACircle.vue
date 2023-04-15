@@ -10,7 +10,7 @@ const props = defineProps<{
 const puzzle = usePuzzleStore()
 
 const selected = computed(() => puzzle.selectedCell === props.cellId)
-const highlighted = computed(() => puzzle.selectedDigit && props.cell.value === puzzle.selectedDigit)
+const highlighted = computed(() => puzzle.highlightedDigit && puzzle.highlightedDigit === props.cell.value)
 
 </script>
 

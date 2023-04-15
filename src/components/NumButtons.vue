@@ -1,30 +1,23 @@
 <script setup lang="ts">
 import type { Digit } from '@/stores/puzzle';
 import { digits, usePuzzleStore } from '@/stores/puzzle';
-import { computed } from 'vue';
 
 const puzzle = usePuzzleStore();
 
 const handleClick = (digit: Digit) => {
-	puzzle.selectDigit(digit);
+	puzzle.highlightDigit(digit);
 	if (puzzle.selectedCell) {
 		puzzle.updateCell(puzzle.selectedCell, digit);
 		return
 	}
+	puzzle.selectDigit(digit);
 }
-
-const isSelected = computed(
-  () => (digit: Digit) =>
-    !puzzle.selectedCell &&
-    puzzle.selectedDigit &&
-    puzzle.selectedDigit === digit
-);
 </script>
 
 <template>
 	<div class="num-buttons">
 		<div v-for="digit in digits" :key="digit" @click="handleClick(digit)" class="button"
-			:class="{ selected: isSelected(digit) }">
+			:class="{ selected: puzzle.selectedDigit && puzzle.selectedDigit === digit }">
 			{{ digit ? digit : 'X' }}
 		</div>
 	</div>

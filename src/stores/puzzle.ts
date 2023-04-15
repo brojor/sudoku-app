@@ -14,6 +14,7 @@ export const usePuzzleStore = defineStore('puzzle', () => {
   const board = ref<Cell[][]>([])
   const selectedCell = ref<string | null>(null)
   const selectedDigit = ref<Digit>(0)
+  const highlightedDigit = ref<Digit>(0)
 
   const initBoard = (puzzle: number[][]) => {
     board.value = puzzle.map(row => row.map(value => ({ value, isGiven: value !== 0 }))) as Cell[][]
@@ -27,11 +28,15 @@ export const usePuzzleStore = defineStore('puzzle', () => {
     selectedDigit.value = selectedDigit.value === digit ? 0 : digit
   }
 
+  const highlightDigit = (digit: Digit) => {
+    highlightedDigit.value = highlightedDigit.value === digit ? 0 : digit
+  }
+
   const updateCell = (cellId: string, value: Digit) => {
     const [row, col] = cellId.split('').map(Number)
     const cell = board.value[row][col]
     cell.value = cell.value === value ? 0 : value
   }
 
-  return { board, initBoard, selectedCell, selectCell, selectedDigit, selectDigit, updateCell }
+  return { board, initBoard, selectedCell, selectCell, selectedDigit, selectDigit, updateCell, highlightedDigit, highlightDigit}
 })

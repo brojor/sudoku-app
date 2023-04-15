@@ -19,7 +19,10 @@ const initialBoard = [
 puzzle.initBoard(initialBoard)
 
 const handleClick = (row: number, col: number, cell: Cell) => {
-  if (cell.isGiven) return;
+  if (cell.isGiven) {
+    puzzle.highlightDigit(cell.value);
+    return
+  }
   puzzle.selectCell(`${row}${col}`);
 }
 </script>
