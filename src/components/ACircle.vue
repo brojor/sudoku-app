@@ -9,7 +9,7 @@ const props = defineProps<{
 
 const puzzle = usePuzzleStore()
 
-const selected = computed(() => puzzle.selection === props.cellId)
+const selected = computed(() => puzzle.selectedCell === props.cellId)
 </script>
 
 <template>

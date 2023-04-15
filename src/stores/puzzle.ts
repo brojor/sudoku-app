@@ -1,7 +1,8 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 0
+export const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as const
+export type Digit = typeof digits[number]
 
 export interface Cell {
   value: Digit
@@ -11,15 +12,28 @@ export interface Cell {
 
 export const usePuzzleStore = defineStore('puzzle', () => {
   const board = ref<Cell[][]>([])
-  const selection = ref<string | null>(null)
+  const selectedCell = ref<string | null>(null)
+  const selectedDigit = ref<Digit>(0)
 
   const initBoard = (puzzle: number[][]) => {
     board.value = puzzle.map(row => row.map(value => ({ value, isGiven: value !== 0 }))) as Cell[][]
   }
 
   const selectCell = (cellId: string) => {
-    selection.value = selection.value === cellId ? null : cellId
+    selectedCell.value = selectedCell.value === cellId ? null : cellId
   }
 
-  return { board, initBoard, selection, selectCell }
+  const selectDigit = (digit: Digit) => {
+    selectedDigit.value = digit
+  }
+
+  const updateCell = (cellId: string, value: Digit) => {
+    const [row, col] = cellId.split('').map(Number)
+    const cell = board.value[row][col]
+    cell.value = cell.value === value ? 0 : value
+  }
+
+
+
+  return { board, initBoard, selectedCell, selectCell, selectedDigit, selectDigit, updateCell }
 })

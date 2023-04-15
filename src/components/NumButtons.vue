@@ -1,12 +1,22 @@
 <script setup lang="ts">
+import { digits, usePuzzleStore } from '@/stores/puzzle';
+import type { Digit } from '@/stores/puzzle';
+
+const puzzle = usePuzzleStore();
+
+const handleClick = (num: Digit) => {
+	if(puzzle.selectedCell) {
+		puzzle.updateCell(puzzle.selectedCell, num);
+	}
+}
 
 </script>
 
 <template>
 	<div class="num-buttons">
-		<div class="button" v-for="num in 9" :key="num">{{ num }}
+		<div class="button" v-for="num in digits" :key="num" @click="handleClick(num)">
+			{{ num ? num : 'X' }}
 		</div>
-		<div class="button">X</div>
 	</div>
 </template>
 
