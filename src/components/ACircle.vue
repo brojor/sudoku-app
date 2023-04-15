@@ -10,10 +10,12 @@ const props = defineProps<{
 const puzzle = usePuzzleStore()
 
 const selected = computed(() => puzzle.selectedCell === props.cellId)
+const highlighted = computed(() => puzzle.selectedDigit && props.cell.value === puzzle.selectedDigit)
+
 </script>
 
 <template>
-  <div class="circle" :class="{selected, given: cell.isGiven}">
+  <div class="circle" :class="{selected, highlighted, given: cell.isGiven}">
     <template v-if="cell.value">{{ cell.value }}</template>
   </div>
 </template>
@@ -32,10 +34,6 @@ const selected = computed(() => puzzle.selectedCell === props.cellId)
   cursor: pointer;
 }
 
-.selected {
-  background-color: green;
-}
-
 .given {
   background-color: rgba(255, 255, 255, 0.15);
   color: var(--color-text);
@@ -44,5 +42,9 @@ const selected = computed(() => puzzle.selectedCell === props.cellId)
 .highlighted {
   background-color:rgba(0, 255, 0, 0.2);
   color: white;
+}
+
+.selected {
+  background-color: green;
 }
 </style>
