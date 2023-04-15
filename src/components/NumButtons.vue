@@ -1,21 +1,24 @@
 <script setup lang="ts">
-import { digits, usePuzzleStore } from '@/stores/puzzle';
 import type { Digit } from '@/stores/puzzle';
+import { digits, usePuzzleStore } from '@/stores/puzzle';
 
 const puzzle = usePuzzleStore();
 
-const handleClick = (num: Digit) => {
+const handleClick = (digit: Digit) => {
 	if(puzzle.selectedCell) {
-		puzzle.updateCell(puzzle.selectedCell, num);
+		puzzle.updateCell(puzzle.selectedCell, digit);
+		return
 	}
+	puzzle.selectDigit(digit);
 }
 
 </script>
 
 <template>
 	<div class="num-buttons">
-		<div class="button" v-for="num in digits" :key="num" @click="handleClick(num)">
-			{{ num ? num : 'X' }}
+		<div v-for="digit in digits" :key="digit" @click="handleClick(digit)"
+			class="button" :class="{selected: puzzle.selectedDigit && puzzle.selectedDigit === digit}">
+			{{ digit ? digit : 'X' }}
 		</div>
 	</div>
 </template>
@@ -42,5 +45,9 @@ const handleClick = (num: Digit) => {
 	aspect-ratio: 1;
 	border: 0.5px solid rgba(0, 255, 0, 0.5);
 	border-radius: 100%;
+}
+
+.selected {
+	background-color: rgba(0, 255, 0, 0.5);
 }
 </style>

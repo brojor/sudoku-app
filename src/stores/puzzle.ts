@@ -24,7 +24,7 @@ export const usePuzzleStore = defineStore('puzzle', () => {
   }
 
   const selectDigit = (digit: Digit) => {
-    selectedDigit.value = digit
+    selectedDigit.value = selectedDigit.value === digit ? 0 : digit
   }
 
   const updateCell = (cellId: string, value: Digit) => {
@@ -32,8 +32,6 @@ export const usePuzzleStore = defineStore('puzzle', () => {
     const cell = board.value[row][col]
     cell.value = cell.value === value ? 0 : value
   }
-
-
 
   return { board, initBoard, selectedCell, selectCell, selectedDigit, selectDigit, updateCell }
 })
