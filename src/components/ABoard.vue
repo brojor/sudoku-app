@@ -22,8 +22,10 @@ const handleClick = (row: number, col: number, cell: Cell) => {
   if (cell.isGiven) {
     puzzle.selectedCell = null;
     puzzle.highlightDigit(cell.value);
-  } else if(puzzle.selectedDigit && puzzle.pencilMode) {
+  } else if (puzzle.selectedDigit && puzzle.pencilMode) {
     puzzle.updatePossibleValues(`${row}${col}`, puzzle.selectedDigit);
+  } else if (puzzle.selectedDigit) {
+    puzzle.updateCell(`${row}${col}`, puzzle.selectedDigit);
   } else {
     puzzle.selectCell(`${row}${col}`);
   }
