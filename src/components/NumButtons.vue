@@ -5,6 +5,10 @@ import { digits, usePuzzleStore } from '@/stores/puzzle';
 const puzzle = usePuzzleStore();
 
 const handleClick = (digit: Digit) => {
+	if (puzzle.selectedCell && puzzle.pencilMode) {
+		puzzle.updatePossibleValues(puzzle.selectedCell, digit)
+		return
+	}
 	puzzle.highlightDigit(digit);
 	if (puzzle.selectedCell) {
 		puzzle.updateCell(puzzle.selectedCell, digit);

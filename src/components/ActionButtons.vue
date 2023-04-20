@@ -1,15 +1,27 @@
 <script setup lang="ts">
+import { usePuzzleStore } from '@/stores/puzzle';
+
+const puzzle = usePuzzleStore();
+
 const actionButtons = [
 	{ icon: 'refresh', action: 'restart' },
 	{ icon: 'check', action: 'validate' },
 	{ icon: 'edit', action: 'togglePencil' },
 	{ icon: 'undo', action: 'undo' },
 ]
+
+const handleClick = (action: string) => {
+	if(action === 'togglePencil') {
+		puzzle.togglePencilMode();
+		return
+	}
+}
 </script>
 
 <template>
 	<div class="action-buttons">
-		<div class="button" v-for="button in actionButtons" :key="button.action">
+		<div v-for="button in actionButtons" :key="button.action" @click="handleClick(button.action)"
+			class="button" :class="{active: button.action === 'togglePencil' && puzzle.pencilMode}">
 			<div :class="`i-ic:baseline-${button.icon}`"></div>
 		</div>
 	</div>
@@ -36,13 +48,8 @@ const actionButtons = [
 	border-radius: 20px;
 }
 
-.digit-controls .button {
-	font-size: 1.4rem;
-	font-weight: 700;
-	width: 15.3%;
-	aspect-ratio: 1;
-	border: 0.5px solid rgba(0, 255, 0, 0.5);
-	border-radius: 100%;
+.active {
+	background-color: rgba(0, 255, 0, 0.5);
 }
 
 </style>

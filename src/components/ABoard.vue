@@ -20,10 +20,13 @@ puzzle.initBoard(initialBoard)
 
 const handleClick = (row: number, col: number, cell: Cell) => {
   if (cell.isGiven) {
+    puzzle.selectedCell = null;
     puzzle.highlightDigit(cell.value);
-    return
+  } else if(puzzle.selectedDigit && puzzle.pencilMode) {
+    puzzle.updatePossibleValues(`${row}${col}`, puzzle.selectedDigit);
+  } else {
+    puzzle.selectCell(`${row}${col}`);
   }
-  puzzle.selectCell(`${row}${col}`);
 }
 </script>
 

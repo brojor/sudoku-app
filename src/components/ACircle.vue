@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { usePuzzleStore, type Cell } from '@/stores/puzzle';
 import { computed } from 'vue';
+import PossibleDigits from '@/components/PossibleDigits.vue';
 
 const props = defineProps<{
   cellId: string
@@ -10,13 +11,17 @@ const props = defineProps<{
 const puzzle = usePuzzleStore()
 
 const selected = computed(() => puzzle.selectedCell === props.cellId)
-const highlighted = computed(() => puzzle.highlightedDigit && puzzle.highlightedDigit === props.cell.value)
+
+const highlightedValue = computed(() => puzzle.highlightedDigit && puzzle.highlightedDigit === props.cell.value)
+const highlightedPossible = computed(()=>props.cell.possibleValues?.includes(puzzle.highlightedDigit))
+const highlighted = computed(() => highlightedValue.value || highlightedPossible.value)
 
 </script>
 
 <template>
   <div class="circle" :class="{selected, highlighted, given: cell.isGiven}">
-    <template v-if="cell.value">{{ cell.value }}</template>
+    <PossibleDigits v-if="cell.possibleValues?.length" :possible-values="cell.possibleValues"/>
+    <template v-else>{{ cell.value || "" }}</template>
   </div>
 </template>
 
