@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { nextTick } from 'vue'
 
 export const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as const
 export type Digit = (typeof digits)[number]
@@ -17,19 +16,14 @@ export const usePuzzleStore = defineStore('puzzle', {
     selectedDigit: 0 as Digit,
     highlightedDigit: 0 as Digit,
     pencilMode: false,
-    numOfBlankCells: 0
   }),
-  // getters: {
-  //   doubleCount: (state) => state.count * 2,
-  // },
+  getters: {
+    numOfBlankCells: (state) => state.board.flat().filter((cell) => !cell.value).length
+  },
   actions: {
     initBoard(puzzle: number[][]) {
       this.board = puzzle.map((row) =>
-        row.map((value) => {
-          const isGiven = value !== 0
-          if (!isGiven) this.numOfBlankCells++
-          return { value, isGiven }
-        })
+        row.map((value) => ({ value, isGiven: value !== 0 }))
       ) as Cell[][]
     },
 
@@ -49,19 +43,7 @@ export const usePuzzleStore = defineStore('puzzle', {
       const [row, col] = cellId.split('').map(Number)
       const cell = this.board[row][col]
 
-      if (cell.value) {
-        this.numOfBlankCells += 1
-      }
-
-      if (cell.value === value) {
-        cell.value = 0
-        return
-      }
-
-      cell.value = value
-      nextTick(() => {
-        this.numOfBlankCells--
-      })
+      cell.value = cell.value === value ? 0 : value
     },
 
     togglePencilMode() {

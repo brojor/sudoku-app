@@ -9,13 +9,13 @@ const puzzle = usePuzzleStore();
 const sudoku = new Sudoku()
 const initialBoard = sudoku.createPuzzle('beginner')
 
-watch(() => puzzle.numOfBlankCells, async (numbOfBlankCells) => {
-  if (numbOfBlankCells === 0) {
-    const solution = puzzle.board.map(row => row.map(cell => cell.value))
-    const isCorrect = sudoku.checkSolution(solution)
-    isCorrect && alert('You win!')
-  }
-})
+watch(() => puzzle.board, () => {
+  if (puzzle.numOfBlankCells) return 
+
+  const solution = puzzle.board.map(row => row.map(cell => cell.value))
+  const isCorrect = sudoku.checkSolution(solution)
+  if (isCorrect) alert('You win!');
+}, { deep: true })
 
 puzzle.initBoard(initialBoard)
 
