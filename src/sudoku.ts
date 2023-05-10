@@ -10,6 +10,11 @@ function shuffle(array: number[]) {
 
 export class Sudoku {
   board = [] as number[][]
+
+  constructor() {
+    this.createBoard()
+    this.createSolution()
+  }
   
   createBoard() {
     this.board = Array.from({ length: 9 }, () => Array(9).fill(0))
@@ -58,7 +63,7 @@ export class Sudoku {
     return valid
   }
 
-	fillBoard(): boolean {
+	createSolution(): boolean {
 		for (let row = 0; row < 9; row++) {
 			for (let col = 0; col < 9; col++) {
 				if (this.board[row][col] === 0) {
@@ -66,7 +71,7 @@ export class Sudoku {
 					for (const value of possibleValues) {
 						if (this.isValid(row, col, value)) {
 							this.board[row][col] = value
-							if (this.fillBoard()) {
+							if (this.createSolution()) {
 								return true
 							}
 							this.board[row][col] = 0
@@ -79,7 +84,7 @@ export class Sudoku {
 		return true
 	}
 
-  setDifficulty(difficulty: Difficulty) {
+  createPuzzle(difficulty: Difficulty) {
     let numberOfCellsToRemove = {
       beginner: 24,
       easy: 37,
@@ -88,22 +93,29 @@ export class Sudoku {
       extreme: 56,
     }[difficulty]
 
+    const puzzle = this.board.map((row) => [...row])
+
     while (numberOfCellsToRemove > 0) {
       const randomRow = Math.floor(Math.random() * 9)
       const randomCol = Math.floor(Math.random() * 9)
-      if (this.board[randomRow][randomCol] !== 0) {
-        this.board[randomRow][randomCol] = 0
+      if (puzzle[randomRow][randomCol] !== 0) {
+        puzzle[randomRow][randomCol] = 0
         numberOfCellsToRemove--
       }
     }
+
+    return puzzle
   }
-
-  generate(difficulty: Difficulty) {
-    this.createBoard()
-    this.fillBoard()
-    this.setDifficulty(difficulty)
-
-    return this.board
+  
+  checkSolution(puzzle: number[][]) {
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        if (puzzle[row][col] !== this.board[row][col]) {
+          return false
+        }
+      }
+    }
+    return true
   }
 }
 

@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 import { defineStore } from 'pinia'
 
 export const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as const
@@ -16,10 +16,15 @@ export const usePuzzleStore = defineStore('puzzle', () => {
   const selectedDigit = ref<Digit>(0)
   const highlightedDigit = ref<Digit>(0)
   const pencilMode = ref(false)
+  const numOfBlankCells = ref(0)
 
   const initBoard = (puzzle: number[][]) => {
     board.value = puzzle.map((row) =>
-      row.map((value) => ({ value, isGiven: value !== 0 }))
+      row.map((value) => {
+        const isGiven = value !== 0
+        if(!isGiven) numOfBlankCells.value++
+        return { value, isGiven}
+      })
     ) as Cell[][]
   }
 
@@ -38,7 +43,20 @@ export const usePuzzleStore = defineStore('puzzle', () => {
   const updateCell = (cellId: string, value: Digit) => {
     const [row, col] = cellId.split('').map(Number)
     const cell = board.value[row][col]
-    cell.value = cell.value === value ? 0 : value
+
+    if(cell.value) {
+      numOfBlankCells.value+=1
+    } 
+
+    if(cell.value === value) {
+      cell.value = 0
+      return
+    } 
+    
+    cell.value = value
+    nextTick(() => {
+      numOfBlankCells.value--
+    })
   }
 
   const togglePencilMode = () => {
@@ -77,5 +95,6 @@ export const usePuzzleStore = defineStore('puzzle', () => {
     pencilMode,
     togglePencilMode,
     updatePossibleValues,
+    numOfBlankCells
   }
 })

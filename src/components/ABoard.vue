@@ -3,10 +3,19 @@ import { usePuzzleStore } from '@/stores/puzzle';
 import ACircle from '@/components/ACircle.vue';
 import type { Cell } from '@/stores/puzzle';
 import { Sudoku } from '@/sudoku'
+import { watch } from 'vue';
 
 const puzzle = usePuzzleStore();
 const sudoku = new Sudoku()
-const initialBoard = sudoku.generate('hard')
+const initialBoard = sudoku.createPuzzle('beginner')
+
+watch(() => puzzle.numOfBlankCells, async (numbOfBlankCells) => {
+  if (numbOfBlankCells === 0) {
+    const solution = puzzle.board.map(row => row.map(cell => cell.value))
+    const isCorrect = sudoku.checkSolution(solution)
+    isCorrect && alert('You win!')
+  }
+})
 
 puzzle.initBoard(initialBoard)
 
