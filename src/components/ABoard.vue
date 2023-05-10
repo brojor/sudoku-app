@@ -3,21 +3,18 @@ import { usePuzzleStore } from '@/stores/puzzle';
 import ACircle from '@/components/ACircle.vue';
 import type { Cell } from '@/stores/puzzle';
 import { Sudoku } from '@/sudoku'
-import { watch } from 'vue';
 
 const puzzle = usePuzzleStore();
 const sudoku = new Sudoku()
 const initialBoard = sudoku.createPuzzle('beginner')
 
-watch(() => puzzle.board, () => {
-  if (puzzle.numOfBlankCells) return 
+puzzle.initBoard(initialBoard)
 
+const validateSolution = () => {
   const solution = puzzle.board.map(row => row.map(cell => cell.value))
   const isCorrect = sudoku.checkSolution(solution)
   if (isCorrect) alert('You win!');
-}, { deep: true })
-
-puzzle.initBoard(initialBoard)
+}
 
 const handleClick = (row: number, col: number, cell: Cell) => {
   if (cell.isGiven) {
@@ -27,6 +24,9 @@ const handleClick = (row: number, col: number, cell: Cell) => {
     puzzle.updatePossibleValues(`${row}${col}`, puzzle.selectedDigit);
   } else if (puzzle.selectedDigit) {
     puzzle.updateCell(`${row}${col}`, puzzle.selectedDigit);
+    if(puzzle.numOfBlankCells === 0) {
+      validateSolution()
+    }
   } else {
     puzzle.selectCell(`${row}${col}`);
   }
