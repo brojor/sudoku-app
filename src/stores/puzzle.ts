@@ -1,5 +1,5 @@
-import { ref, nextTick } from 'vue'
 import { defineStore } from 'pinia'
+import { nextTick } from 'vue'
 
 export const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as const
 export type Digit = (typeof digits)[number]
@@ -10,91 +10,80 @@ export interface Cell {
   possibleValues?: Omit<Digit, 0>[]
 }
 
-export const usePuzzleStore = defineStore('puzzle', () => {
-  const board = ref<Cell[][]>([])
-  const selectedCell = ref<string | null>(null)
-  const selectedDigit = ref<Digit>(0)
-  const highlightedDigit = ref<Digit>(0)
-  const pencilMode = ref(false)
-  const numOfBlankCells = ref(0)
+export const usePuzzleStore = defineStore('puzzle', {
+  state: () => ({
+    board: [] as Cell[][],
+    selectedCell: null as string | null,
+    selectedDigit: 0 as Digit,
+    highlightedDigit: 0 as Digit,
+    pencilMode: false,
+    numOfBlankCells: 0
+  }),
+  // getters: {
+  //   doubleCount: (state) => state.count * 2,
+  // },
+  actions: {
+    initBoard(puzzle: number[][]) {
+      this.board = puzzle.map((row) =>
+        row.map((value) => {
+          const isGiven = value !== 0
+          if (!isGiven) this.numOfBlankCells++
+          return { value, isGiven }
+        })
+      ) as Cell[][]
+    },
 
-  const initBoard = (puzzle: number[][]) => {
-    board.value = puzzle.map((row) =>
-      row.map((value) => {
-        const isGiven = value !== 0
-        if(!isGiven) numOfBlankCells.value++
-        return { value, isGiven}
+    selectCell(cellId: string) {
+      this.selectedCell = this.selectedCell === cellId ? null : cellId
+    },
+
+    selectDigit(digit: Digit) {
+      this.selectedDigit = this.selectedDigit === digit ? 0 : digit
+    },
+
+    highlightDigit(digit: Digit) {
+      this.highlightedDigit = this.highlightedDigit === digit ? 0 : digit
+    },
+
+    updateCell(cellId: string, value: Digit) {
+      const [row, col] = cellId.split('').map(Number)
+      const cell = this.board[row][col]
+
+      if (cell.value) {
+        this.numOfBlankCells += 1
+      }
+
+      if (cell.value === value) {
+        cell.value = 0
+        return
+      }
+
+      cell.value = value
+      nextTick(() => {
+        this.numOfBlankCells--
       })
-    ) as Cell[][]
-  }
+    },
 
-  const selectCell = (cellId: string) => {
-    selectedCell.value = selectedCell.value === cellId ? null : cellId
-  }
+    togglePencilMode() {
+      this.pencilMode = !this.pencilMode
+    },
 
-  const selectDigit = (digit: Digit) => {
-    selectedDigit.value = selectedDigit.value === digit ? 0 : digit
-  }
+    updatePossibleValues(cellId: string, value: Digit) {
+      const [row, col] = cellId.split('').map(Number)
+      const cell = this.board[row][col]
+      if (cell.possibleValues) {
+        cell.possibleValues.includes(value)
+          ? cell.possibleValues.splice(cell.possibleValues.indexOf(value), 1)
+          : this.addPossibleValue(cell, value)
+      } else {
+        cell.possibleValues = [value]
+      }
+    },
 
-  const highlightDigit = (digit: Digit) => {
-    highlightedDigit.value = highlightedDigit.value === digit ? 0 : digit
-  }
-
-  const updateCell = (cellId: string, value: Digit) => {
-    const [row, col] = cellId.split('').map(Number)
-    const cell = board.value[row][col]
-
-    if(cell.value) {
-      numOfBlankCells.value+=1
-    } 
-
-    if(cell.value === value) {
-      cell.value = 0
-      return
-    } 
-    
-    cell.value = value
-    nextTick(() => {
-      numOfBlankCells.value--
-    })
-  }
-
-  const togglePencilMode = () => {
-    pencilMode.value = !pencilMode.value
-  }
-
-  const updatePossibleValues = (cellId: string, value: Digit) => {
-    const [row, col] = cellId.split('').map(Number)
-    const cell = board.value[row][col]
-    if (cell.possibleValues) {
-      cell.possibleValues.includes(value)
-        ? cell.possibleValues.splice(cell.possibleValues.indexOf(value), 1)
-        : addPossibleValue(cell, value)
-    } else {
-      cell.possibleValues = [value]
+    addPossibleValue(cell: Cell, value: Digit) {
+      if (cell.possibleValues!.length < 8) {
+        cell.possibleValues = [...cell.possibleValues!, value].sort()
+      }
     }
-  }
-
-  const addPossibleValue = (cell: Cell, value: Digit) => {
-    if(cell.possibleValues!.length < 8) {
-      console.log(`cell length: ${cell.possibleValues!.length} digits length: ${digits.length - 1}`)
-      cell.possibleValues = [...cell.possibleValues!, value].sort()
-    }
-  }
-
-  return {
-    board,
-    initBoard,
-    selectedCell,
-    selectCell,
-    selectedDigit,
-    selectDigit,
-    updateCell,
-    highlightedDigit,
-    highlightDigit,
-    pencilMode,
-    togglePencilMode,
-    updatePossibleValues,
-    numOfBlankCells
   }
 })
