@@ -1,17 +1,10 @@
 import { defineStore } from 'pinia'
-
-export const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as const
-export type Digit = (typeof digits)[number]
-
-export interface Cell {
-  value: Digit
-  isGiven: boolean
-  possibleValues?: Omit<Digit, 0>[]
-}
+import { Sudoku } from '@/sudoku'
+import type { SudokuCell, Digit } from '@/types'
 
 export const usePuzzleStore = defineStore('puzzle', {
   state: () => ({
-    board: [] as Cell[][],
+    board: [] as SudokuCell[][],
     selectedCell: null as string | null,
     selectedDigit: 0 as Digit,
     highlightedDigit: 0 as Digit,
@@ -24,7 +17,7 @@ export const usePuzzleStore = defineStore('puzzle', {
     initBoard(puzzle: number[][]) {
       this.board = puzzle.map((row) =>
         row.map((value) => ({ value, isGiven: value !== 0 }))
-      ) as Cell[][]
+      ) as SudokuCell[][]
     },
 
     selectCell(cellId: string) {
@@ -44,6 +37,8 @@ export const usePuzzleStore = defineStore('puzzle', {
       const cell = this.board[row][col]
 
       cell.value = cell.value === value ? 0 : value
+      delete cell.possibleValues
+      this.removePossibleValues(cellId, value)
     },
 
     togglePencilMode() {
@@ -62,10 +57,24 @@ export const usePuzzleStore = defineStore('puzzle', {
       }
     },
 
-    addPossibleValue(cell: Cell, value: Digit) {
+    addPossibleValue(cell: SudokuCell, value: Digit) {
       if (cell.possibleValues!.length < 8) {
         cell.possibleValues = [...cell.possibleValues!, value].sort()
       }
-    }
+    },
+
+    removePossibleValues(cellId: string, value: Digit) {
+      const [row, col] = cellId.split('').map(Number)
+
+      const removeValue = (cell: SudokuCell) => {
+        if(cell.possibleValues?.includes(value)){
+          cell.possibleValues.splice(cell.possibleValues.indexOf(value), 1)
+        }
+      }
+      
+      Sudoku.iterateOverRow(this.board, row, removeValue)
+      Sudoku.iterateOverColumn(this.board, col, removeValue)
+      Sudoku.iterateOverBox(this.board, row, col, removeValue)
+    },
   }
 })

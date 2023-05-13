@@ -1,3 +1,4 @@
+import type { Digit } from '@/types'
 type Difficulty = 'beginner' | 'easy' | 'medium' | 'hard' | 'extreme'
 
 function shuffle(array: number[]) {
@@ -9,7 +10,7 @@ function shuffle(array: number[]) {
 }
 
 export class Sudoku {
-  board = [] as number[][]
+  board: Digit[][] = []
 
   constructor() {
     this.createBoard()
@@ -20,46 +21,41 @@ export class Sudoku {
     this.board = Array.from({ length: 9 }, () => Array(9).fill(0))
   }
 
-  iterateOverRow(row: number, callback: (value: number) => void) {
+  static iterateOverRow<T>(board: T[][], row: number, callback: (value: T) => void) {
     for (let i = 0; i < 9; i++) {
-      callback(this.board[row][i])
+      callback(board[row][i])
     }
   }
 
-  iterateOverColumn(col: number, callback: (value: number) => void) {
+  static iterateOverColumn<T>(board: T[][], col: number, callback: (value: T) => void) {
     for (let i = 0; i < 9; i++) {
-      callback(this.board[i][col])
+      callback(board[i][col])
     }
   }
 
-  iterateOverBox(row: number, col: number, callback: (value: number) => void) {
+  static iterateOverBox<T>(board: T[][], row: number, col: number, callback: (value: T) => void) {
     const startRow = Math.floor(row / 3) * 3
     const startCol = Math.floor(col / 3) * 3
 
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
-        callback(this.board[startRow + i][startCol + j])
+        callback(board[startRow + i][startCol + j])
       }
     }
   }
 
-  isValid(row: number, col: number, value: number) {
+  isValid(row: number, col: number, value: Digit) {
     let valid = true
-    this.iterateOverRow(row, (v) => {
+
+    const checkValue = (v: Digit) => {
       if (v === value) {
         valid = false
       }
-    })
-    this.iterateOverColumn(col, (v) => {
-      if (v === value) {
-        valid = false
-      }
-    })
-    this.iterateOverBox(row, col, (v) => {
-      if (v === value) {
-        valid = false
-      }
-    })
+    }
+
+    Sudoku.iterateOverRow(this.board, row, checkValue)
+    Sudoku.iterateOverColumn(this.board, col, checkValue)
+    Sudoku.iterateOverBox(this.board, row, col, checkValue)
     return valid
   }
 
@@ -67,7 +63,7 @@ export class Sudoku {
 		for (let row = 0; row < 9; row++) {
 			for (let col = 0; col < 9; col++) {
 				if (this.board[row][col] === 0) {
-					const possibleValues = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9])
+					const possibleValues = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9]) as Digit[]
 					for (const value of possibleValues) {
 						if (this.isValid(row, col, value)) {
 							this.board[row][col] = value
@@ -107,7 +103,7 @@ export class Sudoku {
     return puzzle
   }
   
-  checkSolution(puzzle: number[][]) {
+  checkSolution(puzzle: Digit[][]) {
     for (let row = 0; row < 9; row++) {
       for (let col = 0; col < 9; col++) {
         if (puzzle[row][col] !== this.board[row][col]) {

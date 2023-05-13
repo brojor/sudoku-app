@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { Digit } from '@/stores/puzzle';
-import { digits, usePuzzleStore } from '@/stores/puzzle';
+import type { Digit } from '@/types';
+import { usePuzzleStore } from '@/stores/puzzle';
 
 const puzzle = usePuzzleStore();
+const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as const;
 
 const handleClick = (digit: Digit) => {
 	if (puzzle.selectedCell && puzzle.pencilMode) {
