@@ -12,7 +12,8 @@ export const usePuzzleStore = defineStore('puzzle', {
   }),
 
   getters: {
-    numOfBlankCells: (state) => state.board.flat().filter((cell) => !cell.value).length
+    numOfBlankCells: (state) => state.board.flat().filter((cell) => !cell.value).length,
+    numOfRemaining: (state) => (digit: Candidate) => 9 - state.board.flat().filter((cell) => cell.value === digit).length
   },
 
   actions: {

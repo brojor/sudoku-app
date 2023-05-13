@@ -24,6 +24,7 @@ const handleClick = (digit: Digit) => {
 		<div v-for="digit in digits" :key="digit" @click="handleClick(digit)" class="button"
 			:class="{ selected: puzzle.selectedDigit && puzzle.selectedDigit === digit }">
 			{{ digit ? digit : 'X' }}
+			<span v-if="digit">{{ puzzle.numOfRemaining(digit) || '' }}</span>
 		</div>
 	</div>
 </template>
@@ -50,9 +51,16 @@ const handleClick = (digit: Digit) => {
 	aspect-ratio: 1;
 	border: 0.5px solid rgba(0, 255, 0, 0.5);
 	border-radius: 100%;
+	position: relative;
 }
 
 .selected {
 	background-color: rgba(0, 255, 0, 0.5);
+}
+
+span {
+	position: absolute;
+	font-size: 0.75rem;
+	bottom: 0;
 }
 </style>
