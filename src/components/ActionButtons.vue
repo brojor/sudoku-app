@@ -11,9 +11,13 @@ const actionButtons = [
 ]
 
 const handleClick = (action: string) => {
-	if(action === 'togglePencil') {
-		puzzle.togglePencilMode();
-		return
+	switch (action) {
+		case 'togglePencil':
+			puzzle.togglePencilMode();
+			break;
+		case 'restart':
+			puzzle.restart();
+			break;
 	}
 }
 </script>

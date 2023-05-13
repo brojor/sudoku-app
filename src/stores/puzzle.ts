@@ -84,6 +84,12 @@ export const usePuzzleStore = defineStore('puzzle', {
       Sudoku.iterateOverRow(this.board, row, removeValue)
       Sudoku.iterateOverColumn(this.board, col, removeValue)
       Sudoku.iterateOverBox(this.board, row, col, removeValue)
+    },
+
+    restart() {
+      this.board = this.board.map((row) =>
+        row.map(({value, isGiven}) => ({ value: isGiven ? value : 0, isGiven }))
+      )
     }
   }
 })
