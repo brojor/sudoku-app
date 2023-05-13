@@ -18,6 +18,9 @@ const handleClick = (action: string) => {
 		case 'restart':
 			puzzle.restart();
 			break;
+		case 'undo':
+			puzzle.undo();
+			break;
 	}
 }
 </script>
