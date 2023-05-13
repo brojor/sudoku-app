@@ -3,17 +3,21 @@ import { usePuzzleStore } from '@/stores/puzzle';
 import ACircle from '@/components/ACircle.vue';
 import type { Candidate, SudokuCell } from '@/types'
 import { Sudoku } from '@/sudoku'
+import { ref } from 'vue';
 
 const puzzle = usePuzzleStore();
 const sudoku = new Sudoku()
 const initialBoard = sudoku.createPuzzle('beginner')
+const isSolved = ref(false)
 
 puzzle.initBoard(initialBoard)
 
 const validateSolution = () => {
   const solution = puzzle.board.map(row => row.map(cell => cell.value))
   const isCorrect = sudoku.checkSolution(solution)
-  if (isCorrect) alert('You win!');
+  if (isCorrect) {
+    isSolved.value = true
+  }
 }
 
 const handleClick = (row: number, col: number, cell: SudokuCell) => {
@@ -34,7 +38,7 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
 </script>
 
 <template>
-  <div class="board">
+  <div class="board" :class="{'is-solved': isSolved}">
     <template v-for="(row, rowIdx) in puzzle.board">
       <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" class="cell" :row="rowIdx + 1"
         :col="colIdx + 1">
@@ -54,6 +58,16 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
   aspect-ratio: 1;
   padding: 0 2px;
   margin-top: 8vh;
+}
+
+.board.is-solved {
+  transform: translateY(50px);
+  transition: all .5s ease-in-out
+}
+
+.board.is-solved .given, .board.is-solved .highlighted {
+  background-color: transparent;
+  color: #fff;
 }
 
 .cell {
