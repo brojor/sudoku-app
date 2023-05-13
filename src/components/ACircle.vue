@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { usePuzzleStore, type Cell } from '@/stores/puzzle';
+import { usePuzzleStore } from '@/stores/puzzle';
 import { computed } from 'vue';
 import PossibleDigits from '@/components/PossibleDigits.vue';
+import type { SudokuCell } from '@/types';
 
 const props = defineProps<{
   cellId: string
-  cell: Cell
+  cell: SudokuCell
 }>()
 
 const puzzle = usePuzzleStore()
@@ -13,7 +14,7 @@ const puzzle = usePuzzleStore()
 const selected = computed(() => puzzle.selectedCell === props.cellId)
 
 const highlightedValue = computed(() => puzzle.highlightedDigit && puzzle.highlightedDigit === props.cell.value)
-const highlightedPossible = computed(()=>props.cell.possibleValues?.includes(puzzle.highlightedDigit))
+const highlightedPossible = computed(()=>puzzle.highlightedDigit && props.cell.possibleValues?.includes(puzzle.highlightedDigit))
 const highlighted = computed(() => highlightedValue.value || highlightedPossible.value)
 
 </script>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { usePuzzleStore } from '@/stores/puzzle';
 import ACircle from '@/components/ACircle.vue';
-import type { SudokuCell } from '@/types'
+import type { Candidate, SudokuCell } from '@/types'
 import { Sudoku } from '@/sudoku'
 
 const puzzle = usePuzzleStore();
@@ -19,7 +19,7 @@ const validateSolution = () => {
 const handleClick = (row: number, col: number, cell: SudokuCell) => {
   if (cell.isGiven) {
     puzzle.selectedCell = null;
-    puzzle.highlightDigit(cell.value);
+    puzzle.highlightDigit(cell.value as Candidate);
   } else if (puzzle.selectedDigit && puzzle.pencilMode) {
     puzzle.updatePossibleValues(`${row}${col}`, puzzle.selectedDigit);
   } else if (puzzle.selectedDigit) {
