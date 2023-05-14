@@ -66,17 +66,17 @@ export const usePuzzleStore = defineStore('puzzle', {
       if (value === 0) return delete cell.possibleValues
       
       if (cell.possibleValues) {
-        cell.possibleValues.includes(value)
-        ? cell.possibleValues.splice(cell.possibleValues.indexOf(value), 1)
-        : this.addPossibleValue(cell, value)
+        this.togglePossibleValue(cell, value)
       } else {
         cell.possibleValues = [value]
       }
       this.createSnapshot(this.board)
     },
 
-    addPossibleValue(cell: SudokuCell, value: Candidate) {
-      if (cell.possibleValues!.length < 8) {
+    togglePossibleValue(cell: SudokuCell, value: Candidate) {
+      if (cell.possibleValues?.includes(value)) {
+        cell.possibleValues.splice(cell.possibleValues.indexOf(value), 1)
+      } else if (cell.possibleValues!.length < 8) {
         cell.possibleValues = [...cell.possibleValues!, value].sort()
       }
     },
