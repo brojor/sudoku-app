@@ -30,7 +30,7 @@ export class Sudoku {
   constructor() {
     this.createBoard()
     this.createSolution()
-    this.createPuzzle('extreme')
+    // this.createPuzzle('extreme')
   }
 
   createBoard() {
@@ -62,15 +62,13 @@ export class Sudoku {
 
   isValid({ board = this.solution, row, col, value }: IsValidParams) {
     let valid = true
-
-    const checkValue = (v: Digit) => {
-      if (v === value) {
-        valid = false
-      }
-    }
+    
+    const checkValue = (v: Digit) => v === value && (valid = false)
 
     Sudoku.iterateOverRow(board, row, checkValue)
+    if(!valid) return valid
     Sudoku.iterateOverColumn(board, col, checkValue)
+    if(!valid) return valid
     Sudoku.iterateOverBox(board, row, col, checkValue)
     return valid
   }
