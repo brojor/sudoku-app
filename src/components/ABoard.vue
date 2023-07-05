@@ -6,19 +6,8 @@ import { Sudoku } from '@/sudoku'
 import { ref } from 'vue';
 
 const puzzle = usePuzzleStore();
-const sudoku = new Sudoku()
-const initialBoard = sudoku.createPuzzle('beginner')
-const isSolved = ref(false)
 
-puzzle.initBoard(initialBoard)
-
-const validateSolution = () => {
-  const solution = puzzle.board.map(row => row.map(cell => cell.value))
-  const isCorrect = sudoku.checkSolution(solution)
-  if (isCorrect) {
-    isSolved.value = true
-  }
-}
+puzzle.initBoard()
 
 const handleClick = (row: number, col: number, cell: SudokuCell) => {
   if (cell.isGiven) {
@@ -29,7 +18,7 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
   } else if (puzzle.selectedDigit) {
     puzzle.updateCell(`${row}${col}`, puzzle.selectedDigit);
     if(puzzle.numOfBlankCells === 0) {
-      validateSolution()
+      puzzle.checkSolution()
     }
   } else {
     puzzle.selectCell(`${row}${col}`);
@@ -38,7 +27,7 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
 </script>
 
 <template>
-  <div class="board" :class="{'is-solved': isSolved}">
+  <div class="board" :class="{'is-solved': puzzle.isSolved}">
     <template v-for="(row, rowIdx) in puzzle.board">
       <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" class="cell" :row="rowIdx + 1"
         :col="colIdx + 1">

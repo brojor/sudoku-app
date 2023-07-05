@@ -20,7 +20,7 @@ const highlighted = computed(() => highlightedValue.value || highlightedPossible
 </script>
 
 <template>
-  <div class="circle" :class="{selected, highlighted, given: cell.isGiven}">
+  <div class="circle" :class="{selected, highlighted, given: cell.isGiven, invalid: cell.isInvalid}">
     <PossibleDigits v-if="cell.possibleValues?.length" :possible-values="cell.possibleValues"/>
     <template v-else>{{ cell.value || "" }}</template>
   </div>
@@ -48,6 +48,10 @@ const highlighted = computed(() => highlightedValue.value || highlightedPossible
 .highlighted {
   background-color:rgba(0, 255, 0, 0.2);
   color: white;
+}
+
+.invalid {
+  background-color: rgb(255, 52, 68);
 }
 
 .selected {

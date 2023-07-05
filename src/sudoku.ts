@@ -1,4 +1,4 @@
-import type { Digit } from './types'
+import type { Digit, SudokuCell } from './types'
 type Difficulty = 'beginner' | 'easy' | 'medium' | 'hard' | 'extreme'
 interface IsValidParams {
   board?: Digit[][]
@@ -62,13 +62,13 @@ export class Sudoku {
 
   isValid({ board = this.solution, row, col, value }: IsValidParams) {
     let valid = true
-    
+
     const checkValue = (v: Digit) => v === value && (valid = false)
 
     Sudoku.iterateOverRow(board, row, checkValue)
-    if(!valid) return valid
+    if (!valid) return valid
     Sudoku.iterateOverColumn(board, col, checkValue)
-    if(!valid) return valid
+    if (!valid) return valid
     Sudoku.iterateOverBox(board, row, col, checkValue)
     return valid
   }
@@ -91,7 +91,6 @@ export class Sudoku {
         }
       }
     }
-    console.log('solution created')
     return true
   }
 
@@ -168,5 +167,19 @@ export class Sudoku {
 
   checkSolution(puzzle: Digit[][]) {
     return JSON.stringify(puzzle) === JSON.stringify(this.solution)
+  }
+
+  validatePuzzle(puzzle: SudokuCell[][]) {
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        const cell = puzzle[row][col]
+        if (cell.value === 0 || cell.isGiven) continue
+        if (cell.value !== this.solution[row][col]) {
+          cell.isInvalid = true
+        }
+      }
+    }
+
+    return puzzle
   }
 }

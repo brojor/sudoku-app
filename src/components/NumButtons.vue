@@ -49,7 +49,7 @@ const handleClick = (digit: Digit) => {
 	font-weight: 700;
 	width: calc((100% - 4 * 2vw) / 5);
 	aspect-ratio: 1;
-	border: 0.5px solid rgba(0, 255, 0, 0.5);
+	border: 1px solid rgba(0, 255, 0, 0.25);
 	border-radius: 100%;
 	position: relative;
 }

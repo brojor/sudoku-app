@@ -5,4 +5,5 @@ export interface SudokuCell {
   value: Digit
   isGiven: boolean
   possibleValues?: Candidate[]
+  isInvalid?: boolean
 }

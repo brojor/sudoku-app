@@ -3,8 +3,13 @@ import { Sudoku } from '@/sudoku'
 import type { SudokuCell, Digit, Candidate } from '@/types'
 
 function cloneBoard(board: SudokuCell[][]) {
-  return board.map((row) => row.map((cell) => ({ ...cell, possibleValues: cell.possibleValues?.slice() })))
+  return board.map((row) =>
+    row.map((cell) => ({ ...cell, possibleValues: cell.possibleValues?.slice() }))
+  )
 }
+
+const sudoku = new Sudoku()
+const initialBoard = sudoku.createPuzzle('beginner')
 
 export const usePuzzleStore = defineStore('puzzle', {
   state: () => ({
@@ -13,7 +18,8 @@ export const usePuzzleStore = defineStore('puzzle', {
     selectedDigit: 0 as Digit,
     highlightedDigit: null as Candidate | null,
     pencilMode: false,
-    snapshots: [] as SudokuCell[][][]
+    snapshots: [] as SudokuCell[][][],
+    isSolved: false
   }),
 
   getters: {
@@ -23,8 +29,8 @@ export const usePuzzleStore = defineStore('puzzle', {
   },
 
   actions: {
-    initBoard(puzzle: number[][]) {
-      this.board = puzzle.map((row) =>
+    initBoard() {
+      this.board = initialBoard.map((row) =>
         row.map((value) => ({ value, isGiven: value !== 0 }))
       ) as SudokuCell[][]
       this.createSnapshot(this.board)
@@ -45,13 +51,14 @@ export const usePuzzleStore = defineStore('puzzle', {
     updateCell(cellId: string, value: Digit) {
       const [row, col] = cellId.split('').map(Number)
       const cell = this.board[row][col]
-      
+
       cell.value = cell.value === value ? 0 : value
-      
+
       if (cell.value) {
         this.removePossibleValues(cellId, cell.value)
         delete cell.possibleValues
       }
+      cell.isInvalid = false
       this.createSnapshot(this.board)
     },
 
@@ -62,9 +69,9 @@ export const usePuzzleStore = defineStore('puzzle', {
     updatePossibleValues(cellId: string, value: Digit) {
       const [row, col] = cellId.split('').map(Number)
       const cell = this.board[row][col]
-      
+
       if (value === 0) return delete cell.possibleValues
-      
+
       if (cell.possibleValues) {
         this.togglePossibleValue(cell, value)
       } else {
@@ -109,6 +116,18 @@ export const usePuzzleStore = defineStore('puzzle', {
       if (this.snapshots.length > 1) {
         this.snapshots.pop()
         this.board = cloneBoard(this.snapshots[this.snapshots.length - 1])
+      }
+    },
+
+    validate() {
+      this.board = sudoku.validatePuzzle(this.board)
+    },
+
+    checkSolution() {
+      const solution = this.board.map((row) => row.map((cell) => cell.value))
+      const isCorrect = sudoku.checkSolution(solution)
+      if (isCorrect) {
+        this.isSolved = true
       }
     }
   }

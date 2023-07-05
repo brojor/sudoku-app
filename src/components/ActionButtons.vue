@@ -21,6 +21,9 @@ const handleClick = (action: string) => {
 		case 'undo':
 			puzzle.undo();
 			break;
+		case 'validate':
+			puzzle.validate();
+			break;
 	}
 }
 </script>
