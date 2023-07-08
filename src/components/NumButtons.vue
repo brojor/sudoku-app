@@ -35,8 +35,14 @@ const handleClick = (digit: Digit) => {
 	justify-content: center;
 	gap: 2vw;
 	flex-wrap: wrap;
-	margin: 46px auto 0;
+	margin: 0 auto;
 	width: calc(100% - 20vw);
+	transition: all 0.5s ease-in-out;
+}
+
+.is-solved .num-buttons {
+	opacity: 0;
+	pointer-events: none;
 }
 
 .button {

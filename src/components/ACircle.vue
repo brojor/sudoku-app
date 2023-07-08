@@ -52,7 +52,7 @@ const animationDelay = computed(() => {
 }
 
 .given {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: rgba(255, 255, 255, 0.1);
   color: var(--color-text);
 }
 

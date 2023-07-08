@@ -46,6 +46,11 @@ const handleClick = (action: string) => {
 	width: calc(100% - 14vw);
 }
 
+.is-solved .action-buttons {
+	opacity: 0;
+	pointer-events: none;
+}
+
 .button {
 	display: flex;
 	align-items: center;

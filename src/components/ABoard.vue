@@ -11,6 +11,7 @@ puzzle.initBoard()
 const clickedCell = ref('')
 
 const handleClick = (row: number, col: number, cell: SudokuCell) => {
+  if (puzzle.isSolved) return
   clickedCell.value = `${row}${col}`
 
   if (cell.isGiven) {
@@ -28,14 +29,17 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
 </script>
 
 <template>
-  <div class="board" :class="{ 'is-solved': puzzle.isSolved }">
-    <template v-for="(row, rowIdx) in puzzle.board">
-      <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" class="cell" :row="rowIdx + 1"
-        :col="colIdx + 1">
-        <ACircle :cell-id="`${rowIdx}${colIdx}`" :cell="cell" @click="handleClick(rowIdx, colIdx, cell)"
-          :clicked="`${rowIdx}${colIdx}` === clickedCell" />
-      </div>
-    </template>
+  <div class="wrapper">
+    <div class="time">3M 24S</div>
+    <div class="board">
+      <template v-for="(row, rowIdx) in puzzle.board">
+        <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" class="cell" :row="rowIdx + 1"
+          :col="colIdx + 1">
+          <ACircle :cell-id="`${rowIdx}${colIdx}`" :cell="cell" @click="handleClick(rowIdx, colIdx, cell)"
+            :clicked="`${rowIdx}${colIdx}` === clickedCell" />
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -48,17 +52,18 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
   width: 100vw;
   aspect-ratio: 1;
   padding: 0 2px;
-  margin-top: 4vh;
 }
 
-.board.is-solved {
+.is-solved .board {
   transform: translateY(50px);
-  transition: all .5s ease-in-out
+  transition: all .5s ease-in-out;
+  transition-delay: .5s;
 }
 
-.board.is-solved .given,
-.board.is-solved .highlighted {
+.is-solved .board .given,
+.is-solved .board .highlighted {
   background-color: transparent;
+  transition: all .5s ease-in-out;
   color: #fff;
 }
 
@@ -104,5 +109,28 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
   top: -.5px;
   bottom: -.5px;
   opacity: 1;
+}
+
+.wrapper {
+  position: relative;
+}
+
+.time {
+  position: absolute;
+  top: 5vw;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 4.5vw;
+  opacity: 0;
+  color: #fff;
+}
+
+.is-solved .time {
+  transition: all .5s ease-in-out;
+  opacity: 1;
+  transition-delay: 1s;
 }
 </style>

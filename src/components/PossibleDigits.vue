@@ -21,7 +21,7 @@ const rows = computed(()=>[
 ].reverse())
 </script>
 
-<style>
+<style scoped>
 .wrapper{
   color: #fff;
   font-size: 2.7vw;
