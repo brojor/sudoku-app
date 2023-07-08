@@ -120,6 +120,7 @@ export const usePuzzleStore = defineStore('puzzle', {
     },
 
     validate() {
+      this.selectedCell = null
       this.board = sudoku.validatePuzzle(this.board)
     },
 

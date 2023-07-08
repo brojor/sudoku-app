@@ -7,6 +7,7 @@ import type { SudokuCell } from '@/types';
 const props = defineProps<{
   cellId: string
   cell: SudokuCell
+  clicked: boolean
 }>()
 
 const puzzle = usePuzzleStore()
@@ -14,15 +15,24 @@ const puzzle = usePuzzleStore()
 const selected = computed(() => puzzle.selectedCell === props.cellId)
 
 const highlightedValue = computed(() => puzzle.highlightedDigit && puzzle.highlightedDigit === props.cell.value)
-const highlightedPossible = computed(()=>puzzle.highlightedDigit && props.cell.possibleValues?.includes(puzzle.highlightedDigit))
+const highlightedPossible = computed(() => puzzle.highlightedDigit && props.cell.possibleValues?.includes(puzzle.highlightedDigit))
 const highlighted = computed(() => highlightedValue.value || highlightedPossible.value)
+const indicatorActive = computed(() => highlighted.value || props.cell.isInvalid)
+
+const animationDelay = computed(() => {
+  if (props.clicked || puzzle.selectedCell) return '0ms'
+  return `${Math.floor(Math.random() * 300)}ms`
+})
 
 </script>
 
 <template>
-  <div class="circle" :class="{selected, highlighted, given: cell.isGiven, invalid: cell.isInvalid}">
-    <PossibleDigits v-if="cell.possibleValues?.length" :possible-values="cell.possibleValues"/>
-    <template v-else>{{ cell.value || "" }}</template>
+  <div class="circle" :class="{ given: cell.isGiven, selected }">
+    <Transition>
+      <div class="indicator" v-if="indicatorActive" :class="{ invalid: cell.isInvalid, highlighted }"></div>
+    </Transition>
+    <PossibleDigits v-if="cell.possibleValues?.length" :possible-values="cell.possibleValues" />
+    <p v-else>{{ cell.value || "" }}</p>
   </div>
 </template>
 
@@ -38,6 +48,7 @@ const highlighted = computed(() => highlightedValue.value || highlightedPossible
   font-size: 6vw;
   font-weight: 500;
   cursor: pointer;
+  position: relative;
 }
 
 .given {
@@ -45,16 +56,54 @@ const highlighted = computed(() => highlightedValue.value || highlightedPossible
   color: var(--color-text);
 }
 
-.highlighted {
-  background-color:rgba(0, 255, 0, 0.2);
+.selected {
+  background-color: rgb(13, 255, 0);
+}
+
+
+.indicator {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
   color: white;
 }
 
-.invalid {
-  background-color: rgb(255, 52, 68);
+.indicator.selected {
+  background-color: green;
 }
 
-.selected {
-  background-color: green;
+.indicator.highlighted {
+  background-color: rgb(55, 100, 55);
+  animation-delay: v-bind(animationDelay);
+  animation-fill-mode: both;
+}
+
+.indicator.invalid {
+  background-color: rgb(255, 52, 68);
+  animation-delay: v-bind(animationDelay);
+  animation-fill-mode: both;
+}
+
+.v-enter-active {
+  animation: bounce-in 0.3s;
+}
+
+.v-leave-active {
+  animation: bounce-in 0.3s reverse;
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 </style>

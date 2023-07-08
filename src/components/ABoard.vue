@@ -2,22 +2,26 @@
 import { usePuzzleStore } from '@/stores/puzzle';
 import ACircle from '@/components/ACircle.vue';
 import type { Candidate, SudokuCell } from '@/types'
-import { Sudoku } from '@/sudoku'
 import { ref } from 'vue';
 
 const puzzle = usePuzzleStore();
 
 puzzle.initBoard()
 
+const clickedCell = ref('')
+
 const handleClick = (row: number, col: number, cell: SudokuCell) => {
+  clickedCell.value = `${row}${col}`
+
   if (cell.isGiven) {
+    if (puzzle.selectedDigit) return
     puzzle.selectedCell = null;
     puzzle.highlightDigit(cell.value as Candidate);
   } else if (puzzle.selectedDigit && puzzle.pencilMode) {
     puzzle.updatePossibleValues(`${row}${col}`, puzzle.selectedDigit);
   } else if (puzzle.selectedDigit) {
     puzzle.updateCell(`${row}${col}`, puzzle.selectedDigit);
-    if(puzzle.numOfBlankCells === 0) {
+    if (puzzle.numOfBlankCells === 0) {
       puzzle.checkSolution()
     }
   } else {
@@ -27,11 +31,12 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
 </script>
 
 <template>
-  <div class="board" :class="{'is-solved': puzzle.isSolved}">
+  <div class="board" :class="{ 'is-solved': puzzle.isSolved }">
     <template v-for="(row, rowIdx) in puzzle.board">
       <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" class="cell" :row="rowIdx + 1"
         :col="colIdx + 1">
-        <ACircle :cell-id="`${rowIdx}${colIdx}`" :cell="cell" @click="handleClick(rowIdx, colIdx, cell)" />
+        <ACircle :cell-id="`${rowIdx}${colIdx}`" :cell="cell" @click="handleClick(rowIdx, colIdx, cell)"
+          :clicked="`${rowIdx}${colIdx}` === clickedCell" />
       </div>
     </template>
   </div>
@@ -46,7 +51,7 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
   width: 100vw;
   aspect-ratio: 1;
   padding: 0 2px;
-  margin-top: 8vh;
+  margin-top: 4vh;
 }
 
 .board.is-solved {
@@ -54,7 +59,8 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
   transition: all .5s ease-in-out
 }
 
-.board.is-solved .given, .board.is-solved .highlighted {
+.board.is-solved .given,
+.board.is-solved .highlighted {
   background-color: transparent;
   color: #fff;
 }
