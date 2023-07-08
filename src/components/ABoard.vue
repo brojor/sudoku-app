@@ -21,9 +21,6 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
     puzzle.updatePossibleValues(`${row}${col}`, puzzle.selectedDigit);
   } else if (puzzle.selectedDigit) {
     puzzle.updateCell(`${row}${col}`, puzzle.selectedDigit);
-    if (puzzle.numOfBlankCells === 0) {
-      puzzle.checkSolution()
-    }
   } else {
     puzzle.selectCell(`${row}${col}`);
   }

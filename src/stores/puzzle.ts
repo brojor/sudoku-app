@@ -59,6 +59,11 @@ export const usePuzzleStore = defineStore('puzzle', {
         delete cell.possibleValues
       }
       cell.isInvalid = false
+
+      if (this.numOfBlankCells === 0) {
+        this.checkSolution()
+      }
+      
       this.createSnapshot(this.board)
     },
 
@@ -77,6 +82,7 @@ export const usePuzzleStore = defineStore('puzzle', {
       } else {
         cell.possibleValues = [value]
       }
+
       this.createSnapshot(this.board)
     },
 
@@ -128,6 +134,8 @@ export const usePuzzleStore = defineStore('puzzle', {
       const solution = this.board.map((row) => row.map((cell) => cell.value))
       const isCorrect = sudoku.checkSolution(solution)
       if (isCorrect) {
+        this.highlightedDigit = null
+        this.selectedCell = null
         this.isSolved = true
       }
     }
