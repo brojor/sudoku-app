@@ -1,5 +1,17 @@
 import type { Digit, SudokuCell } from './types'
-type Difficulty = 'beginner' | 'easy' | 'medium' | 'hard' | 'extreme'
+
+const difficultyMap = {
+  beginner: 24,
+  easy: 37,
+  medium: 46,
+  hard: 52,
+  extreme: 56
+} as const
+
+export type Difficulty = keyof typeof difficultyMap
+
+export const difficultyList = Object.keys(difficultyMap) as Difficulty[]
+
 interface IsValidParams {
   board?: Digit[][]
   row: number
@@ -16,13 +28,6 @@ function shuffle<T>(array: T[]) {
 }
 
 export class Sudoku {
-  private difficultyMap = {
-    beginner: 24,
-    easy: 37,
-    medium: 46,
-    hard: 52,
-    extreme: 56
-  }
   solution: Digit[][] = []
   puzzle: Digit[][] = []
   numOfSolutions = 0
@@ -95,7 +100,7 @@ export class Sudoku {
   }
 
   createPuzzle(difficulty: Difficulty): number[][] {
-    let numberOfCellsToRemove = this.difficultyMap[difficulty]
+    let numberOfCellsToRemove = difficultyMap[difficulty]
 
     this.puzzle = this.solution.map((row) => [...row])
     const shuffledCells = this.getShuffledCells()

@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { Sudoku } from '@/sudoku'
 import type { SudokuCell, Digit, Candidate } from '@/types'
+import { useGameState } from './gameState'
 
 function cloneBoard(board: SudokuCell[][]) {
   return board.map((row) =>
@@ -9,7 +10,6 @@ function cloneBoard(board: SudokuCell[][]) {
 }
 
 const sudoku = new Sudoku()
-const initialBoard = sudoku.createPuzzle('beginner')
 
 export const usePuzzleStore = defineStore('puzzle', {
   state: () => ({
@@ -34,6 +34,8 @@ export const usePuzzleStore = defineStore('puzzle', {
 
   actions: {
     initBoard() {
+      const gameState = useGameState()
+      const initialBoard = sudoku.createPuzzle(gameState.difficulty)
       this.board = initialBoard.map((row) =>
         row.map((value) => ({ value, isGiven: value !== 0 }))
       ) as SudokuCell[][]
@@ -49,7 +51,7 @@ export const usePuzzleStore = defineStore('puzzle', {
 
     selectDigit(digit: Digit) {
       this.selectedDigit = this.selectedDigit === digit ? null : digit
-      console.log(this.selectedDigit);
+      console.log(this.selectedDigit)
     },
 
     highlightDigit(digit: Digit) {
@@ -58,7 +60,7 @@ export const usePuzzleStore = defineStore('puzzle', {
 
     updateCell(cellId: string, value: Digit) {
       const cell = this.cellFromId(cellId)
-      
+
       cell.isInvalid = false
       cell.value = cell.value === value ? 0 : value
 
@@ -70,7 +72,7 @@ export const usePuzzleStore = defineStore('puzzle', {
       if (this.numOfBlankCells === 0) {
         this.checkSolution()
       }
-      
+
       this.createSnapshot(this.board)
     },
 
