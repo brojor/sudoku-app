@@ -15,15 +15,18 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
   clickedCell.value = `${row}${col}`
 
   if (cell.isGiven) {
-    if (puzzle.selectedDigit) return
+    if (puzzle.selectedDigit !== null) return
     puzzle.selectedCell = null;
     puzzle.highlightDigit(cell.value as Candidate);
-  } else if (puzzle.selectedDigit && puzzle.pencilMode) {
+    return;
+  }
+  
+  if (puzzle.selectedDigit && puzzle.pencilMode) {
     puzzle.updatePossibleValues(`${row}${col}`, puzzle.selectedDigit);
-  } else if (puzzle.selectedDigit) {
-    puzzle.updateCell(`${row}${col}`, puzzle.selectedDigit);
-  } else {
+  } else if (puzzle.selectedDigit === null) {
     puzzle.selectCell(`${row}${col}`);
+  } else {
+    puzzle.updateCell(`${row}${col}`, puzzle.selectedDigit);
   }
 }
 </script>

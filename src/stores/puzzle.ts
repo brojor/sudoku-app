@@ -15,7 +15,7 @@ export const usePuzzleStore = defineStore('puzzle', {
   state: () => ({
     board: [] as SudokuCell[][],
     selectedCell: null as string | null,
-    selectedDigit: 0 as Digit,
+    selectedDigit: null as Digit | null,
     highlightedDigit: null as Candidate | null,
     pencilMode: false,
     snapshots: [] as SudokuCell[][][],
@@ -48,7 +48,8 @@ export const usePuzzleStore = defineStore('puzzle', {
     },
 
     selectDigit(digit: Digit) {
-      this.selectedDigit = this.selectedDigit === digit ? 0 : digit
+      this.selectedDigit = this.selectedDigit === digit ? null : digit
+      console.log(this.selectedDigit);
     },
 
     highlightDigit(digit: Digit) {

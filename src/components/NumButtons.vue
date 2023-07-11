@@ -22,7 +22,7 @@ const handleClick = (digit: Digit) => {
 <template>
 	<div class="num-buttons">
 		<div v-for="digit in digits" :key="digit" @click="handleClick(digit)" class="button"
-			:class="{ selected: puzzle.selectedDigit && puzzle.selectedDigit === digit }">
+			:class="{ selected: puzzle.selectedDigit === digit }">
 			{{ digit ? digit : 'X' }}
 			<span v-if="digit">{{ puzzle.numOfRemaining(digit) || '' }}</span>
 		</div>
