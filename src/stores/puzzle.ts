@@ -19,7 +19,6 @@ export const usePuzzleStore = defineStore('puzzle', {
     highlightedDigit: null as Candidate | null,
     pencilMode: false,
     snapshots: [] as SudokuCell[][][],
-    isSolved: false
   }),
 
   getters: {
@@ -143,10 +142,19 @@ export const usePuzzleStore = defineStore('puzzle', {
       const solution = this.board.map((row) => row.map((cell) => cell.value))
       const isCorrect = sudoku.checkSolution(solution)
       if (isCorrect) {
-        this.highlightedDigit = null
-        this.selectedCell = null
-        this.isSolved = true
+        this.resetState()
+        const gameState = useGameState()
+        gameState.stopTimer()
+        gameState.isSolved = true
       }
+    },
+
+    resetState() {
+      this.selectedCell = null
+      this.selectedDigit = null
+      this.highlightedDigit = null
+      this.pencilMode = false
+      this.snapshots = []
     }
   }
 })

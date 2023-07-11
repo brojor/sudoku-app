@@ -1,26 +1,16 @@
 <template>
 	<div class="wrapper">
 		<i @click="$router.push('/')" class="i-ic:baseline-arrow-back"></i>
-		<div class="timer">{{ time }}</div>
+		<div v-if="!gameState.isSolved" class="timer">{{ gameState.formatedTime }}</div>
 		<i class="i-ic:baseline-palette"></i>
 	</div>
 </template>
 
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { useGameState } from '@/stores/gameState';
+const gameState = useGameState()
 
-const numOfSeconds = ref(0)
-
-setInterval(() => {
-	numOfSeconds.value++
-}, 1000)
-
-const time = computed(() => {
-	const seconds = numOfSeconds.value % 60
-	const minutes = Math.floor(numOfSeconds.value / 60)
-	return minutes > 0 ? `${minutes}M ${seconds}S` : `${seconds}S` 
-})
 	
 </script>
 

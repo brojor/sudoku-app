@@ -2,14 +2,24 @@
 	<div class="menu">
 		<ALogo />
 		<DifficultySelector />
-		<button @click="$router.push('play')">Start</button>
+		<button @click="handleClick">Start</button>
 	</div>
 </template>
 
 <script setup lang="ts">
 import ALogo from '@/components/ALogo.vue';
 import DifficultySelector from '@/components/DifficultySelector.vue';
+import { useGameState } from '@/stores/gameState';
+import { useRouter } from 'vue-router';
 
+const router = useRouter()
+const gameState = useGameState()
+
+const handleClick = () => {
+	gameState.startTimer()
+	gameState.isSolved = false
+	router.push('/play')
+}
 </script>
 
 <style scoped>

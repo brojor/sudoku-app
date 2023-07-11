@@ -3,13 +3,13 @@ import ABoard from '@/components/ABoard.vue';
 import ANavbar from '@/components/ANavbar.vue';
 import ActionButtons from '@/components/ActionButtons.vue';
 import NumButtons from '@/components/NumButtons.vue';
-import { usePuzzleStore } from '@/stores/puzzle';
+import { useGameState } from '@/stores/gameState';
 
-const puzzle = usePuzzleStore();
+const gameState = useGameState()
 </script>
 
 <template>
-  <main :class="{ 'is-solved': puzzle.isSolved }">
+  <main :class="{ 'is-solved': gameState.isSolved }">
     <ANavbar />
     <ABoard />
     <NumButtons />

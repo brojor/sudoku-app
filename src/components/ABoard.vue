@@ -3,15 +3,17 @@ import { usePuzzleStore } from '@/stores/puzzle';
 import ACircle from '@/components/ACircle.vue';
 import type { Candidate, SudokuCell } from '@/types'
 import { ref } from 'vue';
+import { useGameState } from '@/stores/gameState';
 
 const puzzle = usePuzzleStore();
+const gameState = useGameState()
 
 puzzle.initBoard()
 
 const clickedCell = ref('')
 
 const handleClick = (row: number, col: number, cell: SudokuCell) => {
-  if (puzzle.isSolved) return
+  if (gameState.isSolved) return
   clickedCell.value = `${row}${col}`
 
   if (cell.isGiven) {
@@ -33,7 +35,7 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
 
 <template>
   <div class="wrapper">
-    <div class="time">3M 24S</div>
+    <div class="time">{{ gameState.formatedTime }}</div>
     <div class="board">
       <template v-for="(row, rowIdx) in puzzle.board">
         <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" class="cell" :row="rowIdx + 1"
