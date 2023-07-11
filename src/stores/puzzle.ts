@@ -93,6 +93,7 @@ export const usePuzzleStore = defineStore('puzzle', {
     },
 
     togglePossibleValue(cell: SudokuCell, value: Candidate) {
+      cell.value = 0
       if (cell.possibleValues?.includes(value)) {
         cell.possibleValues.splice(cell.possibleValues.indexOf(value), 1)
       } else if (cell.possibleValues!.length < 8) {
