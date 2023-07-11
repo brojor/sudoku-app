@@ -37,8 +37,11 @@ export const usePuzzleStore = defineStore('puzzle', {
     },
 
     selectCell(cellId: string) {
+      const [row, col] = cellId.split('').map(Number)
+      const cell = this.board[row][col]
+      
       this.selectedCell = this.selectedCell === cellId ? null : cellId
-      if(!this.selectedCell) this.highlightedDigit = null
+      this.highlightDigit(cell.value)
     },
 
     selectDigit(digit: Digit) {
