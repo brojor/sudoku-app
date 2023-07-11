@@ -17,7 +17,7 @@ const selected = computed(() => puzzle.selectedCell === props.cellId)
 const highlightedValue = computed(() => puzzle.highlightedDigit && puzzle.highlightedDigit === props.cell.value)
 const highlightedPossible = computed(() => puzzle.highlightedDigit && props.cell.possibleValues?.includes(puzzle.highlightedDigit))
 const highlighted = computed(() => highlightedValue.value || highlightedPossible.value)
-const indicatorActive = computed(() => highlighted.value || props.cell.isInvalid)
+const indicatorActive = computed(() => (highlighted.value || props.cell.isInvalid) && !selected.value)
 
 const animationDelay = computed(() => {
   if (props.clicked || puzzle.selectedCell) return '0ms'
@@ -57,7 +57,7 @@ const animationDelay = computed(() => {
 }
 
 .selected {
-  background-color: rgb(13, 255, 0);
+  background-color: rgb(8, 156, 0);
 }
 
 
@@ -74,7 +74,7 @@ const animationDelay = computed(() => {
 }
 
 .indicator.highlighted {
-  background-color: rgb(55, 100, 55);
+  background-color: rgb(42, 93, 42);
   animation-delay: v-bind(animationDelay);
   animation-fill-mode: both;
 }

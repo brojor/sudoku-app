@@ -38,6 +38,7 @@ export const usePuzzleStore = defineStore('puzzle', {
 
     selectCell(cellId: string) {
       this.selectedCell = this.selectedCell === cellId ? null : cellId
+      if(!this.selectedCell) this.highlightedDigit = null
     },
 
     selectDigit(digit: Digit) {
