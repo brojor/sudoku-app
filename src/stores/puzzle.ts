@@ -25,7 +25,11 @@ export const usePuzzleStore = defineStore('puzzle', {
   getters: {
     numOfBlankCells: (state) => state.board.flat().filter((cell) => !cell.value).length,
     numOfRemaining: (state) => (digit: Candidate) =>
-      9 - state.board.flat().filter((cell) => cell.value === digit).length
+      9 - state.board.flat().filter((cell) => cell.value === digit).length,
+    cellFromId: (state) => (cellId: string) => {
+      const [row, col] = cellId.split('').map(Number)
+      return state.board[row][col]
+    }
   },
 
   actions: {
@@ -37,9 +41,8 @@ export const usePuzzleStore = defineStore('puzzle', {
     },
 
     selectCell(cellId: string) {
-      const [row, col] = cellId.split('').map(Number)
-      const cell = this.board[row][col]
-      
+      const cell = this.cellFromId(cellId)
+
       this.selectedCell = this.selectedCell === cellId ? null : cellId
       this.highlightDigit(cell.value)
     },
@@ -53,16 +56,15 @@ export const usePuzzleStore = defineStore('puzzle', {
     },
 
     updateCell(cellId: string, value: Digit) {
-      const [row, col] = cellId.split('').map(Number)
-      const cell = this.board[row][col]
-
+      const cell = this.cellFromId(cellId)
+      
+      cell.isInvalid = false
       cell.value = cell.value === value ? 0 : value
 
       if (cell.value) {
         this.removePossibleValues(cellId, cell.value)
         delete cell.possibleValues
       }
-      cell.isInvalid = false
 
       if (this.numOfBlankCells === 0) {
         this.checkSolution()
@@ -76,8 +78,7 @@ export const usePuzzleStore = defineStore('puzzle', {
     },
 
     updatePossibleValues(cellId: string, value: Digit) {
-      const [row, col] = cellId.split('').map(Number)
-      const cell = this.board[row][col]
+      const cell = this.cellFromId(cellId)
 
       if (value === 0) return delete cell.possibleValues
 
