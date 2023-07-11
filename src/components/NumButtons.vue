@@ -66,7 +66,8 @@ const handleClick = (digit: Digit) => {
 
 span {
 	position: absolute;
-	font-size: 0.75rem;
+	font-size: 3vw;
+	line-height: 1.4;
 	bottom: 0;
 }
 </style>
