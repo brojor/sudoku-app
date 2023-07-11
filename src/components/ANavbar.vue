@@ -1,5 +1,9 @@
 <template>
-<div class="timer">{{ time }}</div>
+	<div class="wrapper">
+		<i @click="$router.push('/')" class="i-ic:baseline-arrow-back"></i>
+		<div class="timer">{{ time }}</div>
+		<i class="i-ic:baseline-palette"></i>
+	</div>
 </template>
 
 
@@ -15,13 +19,26 @@ setInterval(() => {
 const time = computed(() => {
 	const seconds = numOfSeconds.value % 60
 	const minutes = Math.floor(numOfSeconds.value / 60)
-	return minutes > 0 ? `${minutes}M:${seconds}S` : `${seconds}S` 
+	return minutes > 0 ? `${minutes}M ${seconds}S` : `${seconds}S` 
 })
 	
 </script>
 
 <style scoped>
+.wrapper {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	padding: 0.5rem 1rem;
+}
+
+i {
+	display: block;
+	font-size: 1.5rem;
+}
+
 .timer {
-	margin-top: 1rem;
+	font-size: 3.5vw;
 }
 </style>
