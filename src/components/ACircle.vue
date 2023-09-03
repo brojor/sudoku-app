@@ -5,14 +5,13 @@ import PossibleDigits from '@/components/PossibleDigits.vue';
 import type { SudokuCell } from '@/types';
 
 const props = defineProps<{
-  cellId: string
   cell: SudokuCell
   clicked: boolean
 }>()
 
 const puzzle = usePuzzleStore()
 
-const selected = computed(() => puzzle.selectedCell === props.cellId)
+const selected = computed(() => puzzle.selectedCell === props.cell)
 
 const highlightedValue = computed(() => puzzle.highlightedDigit && puzzle.highlightedDigit === props.cell.value)
 const highlightedPossible = computed(() => puzzle.highlightedDigit && props.cell.possibleValues?.includes(puzzle.highlightedDigit))

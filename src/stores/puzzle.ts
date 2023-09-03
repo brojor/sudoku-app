@@ -14,7 +14,7 @@ const sudoku = new Sudoku()
 export const usePuzzleStore = defineStore('puzzle', {
   state: () => ({
     board: [] as SudokuCell[][],
-    selectedCell: null as string | null,
+    selectedCell: null as SudokuCell | null,
     selectedDigit: null as Digit | null,
     highlightedDigit: null as Candidate | null,
     pencilMode: false,
@@ -25,10 +25,6 @@ export const usePuzzleStore = defineStore('puzzle', {
     numOfBlankCells: (state) => state.board.flat().filter((cell) => !cell.value).length,
     numOfRemaining: (state) => (digit: Candidate) =>
       9 - state.board.flat().filter((cell) => cell.value === digit).length,
-    cellFromId: (state) => (cellId: string) => {
-      const [row, col] = cellId.split('').map(Number)
-      return state.board[row][col]
-    }
   },
 
   actions: {
@@ -41,30 +37,25 @@ export const usePuzzleStore = defineStore('puzzle', {
       this.createSnapshot(this.board)
     },
 
-    selectCell(cellId: string) {
-      const cell = this.cellFromId(cellId)
-
-      this.selectedCell = this.selectedCell === cellId ? null : cellId
+    selectCell(cell: SudokuCell) {
+      this.selectedCell = this.selectedCell === cell ? null : cell
       this.highlightDigit(cell.value)
     },
 
     selectDigit(digit: Digit) {
       this.selectedDigit = this.selectedDigit === digit ? null : digit
-      console.log(this.selectedDigit)
     },
 
     highlightDigit(digit: Digit) {
       this.highlightedDigit = this.highlightedDigit === digit || !digit ? null : digit
     },
 
-    updateCell(cellId: string, value: Digit) {
-      const cell = this.cellFromId(cellId)
-
+    updateCell(cell: SudokuCell, value: Digit) {
       cell.isInvalid = false
       cell.value = cell.value === value ? 0 : value
 
       if (cell.value) {
-        this.removePossibleValues(cellId, cell.value)
+        this.removePossibleValues(cell, cell.value)
         delete cell.possibleValues
       }
 
@@ -79,9 +70,7 @@ export const usePuzzleStore = defineStore('puzzle', {
       this.pencilMode = !this.pencilMode
     },
 
-    updatePossibleValues(cellId: string, value: Digit) {
-      const cell = this.cellFromId(cellId)
-
+    updatePossibleValues(cell: SudokuCell, value: Digit) {
       if (value === 0) return delete cell.possibleValues
 
       if (cell.possibleValues) {
@@ -102,8 +91,10 @@ export const usePuzzleStore = defineStore('puzzle', {
       }
     },
 
-    removePossibleValues(cellId: string, value: Candidate) {
-      const [row, col] = cellId.split('').map(Number)
+    removePossibleValues(cell: SudokuCell, value: Candidate) {
+      const cellIndex = this.board.flat().indexOf(cell)
+      const row = Math.floor(cellIndex / 9)
+      const col = cellIndex % 9
 
       const removeValue = (cell: SudokuCell) => {
         if (cell.possibleValues?.includes(value)) {
