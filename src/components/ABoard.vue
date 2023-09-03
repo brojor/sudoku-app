@@ -12,23 +12,30 @@ puzzle.initBoard()
 
 const clickedCell = ref<null | SudokuCell>(null) 
 
-const handleClick = (cell: SudokuCell) => {
-  if (gameState.isSolved) return
-  clickedCell.value = cell;
+const handleGivenCellClick = (cell: SudokuCell) => {
+  if (puzzle.selectedDigit !== null) return
+  puzzle.selectedCell = null;
+  puzzle.highlightDigit(cell.value as Candidate);
+}
 
-  if (cell.isGiven) {
-    if (puzzle.selectedDigit !== null) return
-    puzzle.selectedCell = null;
-    puzzle.highlightDigit(cell.value as Candidate);
-    return;
-  }
-  
+const handleEditableCellClick = (cell: SudokuCell) => {
   if (puzzle.selectedDigit && puzzle.pencilMode) {
     puzzle.updatePossibleValues(cell, puzzle.selectedDigit);
   } else if (puzzle.selectedDigit === null) {
     puzzle.selectCell(cell);
   } else {
     puzzle.updateCell(cell, puzzle.selectedDigit);
+  }
+}
+
+const handleClick = (cell: SudokuCell) => {
+  if (gameState.isSolved) return
+  clickedCell.value = cell;
+
+  if (cell.isGiven) {
+    handleGivenCellClick(cell);
+  } else {
+    handleEditableCellClick(cell);
   }
 }
 </script>
