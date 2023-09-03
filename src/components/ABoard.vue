@@ -10,11 +10,11 @@ const gameState = useGameState()
 
 puzzle.initBoard()
 
-const clickedCell = ref('')
+const clickedCell = ref<null | SudokuCell>(null) 
 
-const handleClick = (row: number, col: number, cell: SudokuCell) => {
+const handleClick = (cell: SudokuCell) => {
   if (gameState.isSolved) return
-  clickedCell.value = `${row}${col}`
+  clickedCell.value = cell;
 
   if (cell.isGiven) {
     if (puzzle.selectedDigit !== null) return
@@ -24,11 +24,11 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
   }
   
   if (puzzle.selectedDigit && puzzle.pencilMode) {
-    puzzle.updatePossibleValues(`${row}${col}`, puzzle.selectedDigit);
+    puzzle.updatePossibleValues(cell, puzzle.selectedDigit);
   } else if (puzzle.selectedDigit === null) {
-    puzzle.selectCell(`${row}${col}`);
+    puzzle.selectCell(cell);
   } else {
-    puzzle.updateCell(`${row}${col}`, puzzle.selectedDigit);
+    puzzle.updateCell(cell, puzzle.selectedDigit);
   }
 }
 </script>
@@ -40,8 +40,8 @@ const handleClick = (row: number, col: number, cell: SudokuCell) => {
       <template v-for="(row, rowIdx) in puzzle.board">
         <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" class="cell" :row="rowIdx + 1"
           :col="colIdx + 1">
-          <ACircle :cell-id="`${rowIdx}${colIdx}`" :cell="cell" @click="handleClick(rowIdx, colIdx, cell)"
-            :clicked="`${rowIdx}${colIdx}` === clickedCell" />
+          <ACircle :cell="cell" @click="handleClick(cell)"
+            :clicked="cell === clickedCell" />
         </div>
       </template>
     </div>
