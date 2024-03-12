@@ -2,16 +2,17 @@
 	<div class="wrapper">
 		<i @click="$router.push('/')" class="i-ic:baseline-arrow-back"></i>
 		<div v-if="!gameState.isSolved" class="timer">{{ gameState.formatedTime }}</div>
-		<i class="i-ic:baseline-palette"></i>
+		<div class="placeholder"></div>
+		<ColorPicker />
 	</div>
 </template>
 
 
 <script setup lang="ts">
 import { useGameState } from '@/stores/gameState';
-const gameState = useGameState()
+import ColorPicker from './ColorPicker.vue'
 
-	
+const gameState = useGameState()
 </script>
 
 <style scoped>
@@ -20,15 +21,20 @@ const gameState = useGameState()
 	justify-content: space-between;
 	align-items: center;
 	width: 100%;
-	padding: 0.5rem 1rem;
+	padding: 0.5rem 2.5vw;
+	position: relative;
 }
 
 i {
 	display: block;
-	font-size: 1.5rem;
+	font-size: 6vw;
 }
 
 .timer {
 	font-size: 3.5vw;
+}
+
+.placeholder {
+	width: 6vw;
 }
 </style>
