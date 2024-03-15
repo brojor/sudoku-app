@@ -5,7 +5,7 @@
 				:is-active="i === activeColor" @click="setActiveColor(i)" />
 		</div>
 		<div class="button">
-			<i class="i-ic:baseline-palette" @click="expandColorPicker()"></i>
+			<i class="i-ic:baseline-palette" @click="toggleColorPicker()"></i>
 		</div>
 	</div>
 </template>
@@ -18,12 +18,33 @@ import ColoredDot from './ColoredDot.vue'
 const isOpen = ref(false)
 const hasBorder = ref(false)
 const activeColor = ref(4)
+let timeout = 0
 
-const expandColorPicker = () => {
-	isOpen.value = !isOpen.value
+const closeWithDelay = () => {
+	timeout = setTimeout(() => {
+			isOpen.value = !isOpen.value
+			setTimeout(() => {
+				hasBorder.value = !hasBorder.value
+			}, 600)
+		}, 5000)
+}
+
+const restartTimeout = () => {
+	clearTimeout(timeout)
+	closeWithDelay()
+}
+
+const toggleColorPicker = () => {
 	setTimeout(() => {
 		hasBorder.value = !hasBorder.value
 	}, 600)
+	
+	if (!isOpen.value) {
+		closeWithDelay()
+	} else {
+		clearTimeout(timeout)
+	}
+	isOpen.value = !isOpen.value
 }
 
 const setActiveColor = (index: number) => {
@@ -31,7 +52,8 @@ const setActiveColor = (index: number) => {
 	const el = document.body as HTMLElement
 	el.style.setProperty('--foreground', colors[index].foreground)
 	el.style.setProperty('--background', colors[index].background)
-	console.log(`Foreground: ${colors[index].foreground}, Background: ${colors[index].background}`);
+
+	restartTimeout()
 }
 
 const colors = [
@@ -78,7 +100,7 @@ const colors = [
 }
 
 i {
-	font-size: 5vw;
+	font-size: 7vw;
 	margin-left: 2px;
 }
 
