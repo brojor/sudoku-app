@@ -1,8 +1,8 @@
 <template>
 
-	<div class="background-color" :class="{ isActive: isActive }" :style="{ backgroundColor: props.background }">
-		<div class="foreground-color" :style="{ backgroundColor: props.foreground }">
-			<div class="center" :style="{ backgroundColor: props.background }"/>
+	<div class="background-color" :class="{ isActive: isActive }" :style="{ backgroundColor }">
+		<div class="foreground-color" :style="{ backgroundColor: foregroundColor }">
+			<div class="center" :style="{ backgroundColor: backgroundColor }"/>
 		</div>
 	</div>
 
@@ -15,6 +15,9 @@ const props = defineProps<{
 	background: string
 	isActive: boolean
 }>()
+
+const backgroundColor = `rgba(${props.background}, 1)`
+const foregroundColor = `rgba(${props.foreground}, 1)`
 
 </script>
 

@@ -40,6 +40,6 @@ const rows = computed(()=>[
 }
 
 .active {
-  background-color: rgba(0, 255, 0, 0.2);
+  background-color: rgba(var(--foreground), 0.2);
 }
 </style>

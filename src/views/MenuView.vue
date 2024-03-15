@@ -39,7 +39,7 @@ button {
 	color: var(--color-text);
 	border-radius: 20px;
 	padding: 1rem;
-	border: 1px solid rgba(0, 128, 0, 0.5);
+	border: 1px solid rgba(var(--foreground), 0.5);
 	margin: 20px auto;
 	display: block;
 	width: 75%;

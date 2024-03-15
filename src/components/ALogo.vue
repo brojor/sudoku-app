@@ -11,7 +11,7 @@
 .logo {
 	width: 33vw;
 	height: 33vw;
-	background: green;
+	background: rgba(var(--foreground), 1);
 	border-radius: 50%;
 	margin: 0 auto;
 }

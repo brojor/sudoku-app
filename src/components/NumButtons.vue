@@ -55,13 +55,13 @@ const handleClick = (digit: Digit) => {
 	font-weight: 700;
 	width: calc((100% - 4 * 2vw) / 5);
 	aspect-ratio: 1;
-	border: 1px solid rgba(0, 255, 0, 0.25);
+	border: 1px solid rgba(var(--foreground), 0.25);
 	border-radius: 100%;
 	position: relative;
 }
 
 .selected {
-	background-color: rgba(0, 255, 0, 0.5);
+	background-color: rgba(var(--foreground), 0.5);
 }
 
 span {

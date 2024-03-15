@@ -56,7 +56,7 @@ const animationDelay = computed(() => {
 }
 
 .selected {
-  background-color: rgb(8, 156, 0);
+  background-color: rgba(var(--foreground), 1);
 }
 
 
@@ -69,11 +69,11 @@ const animationDelay = computed(() => {
 }
 
 .indicator.selected {
-  background-color: green;
+  background-color: rgba(var(--foreground), 1);
 }
 
 .indicator.highlighted {
-  background-color: rgb(42, 93, 42);
+  background-color: rgba(var(--foreground), 0.5);
   animation-delay: v-bind(animationDelay);
   animation-fill-mode: both;
 }

@@ -91,7 +91,8 @@ const handleClick = (cell: SudokuCell) => {
 .cell::after {
   content: "";
   position: absolute;
-  background-color: green;
+  background-color: rgba(var(--foreground), 1);
+  transition: background-color .5s ease-in-out;
   opacity: .5;
 }
 
