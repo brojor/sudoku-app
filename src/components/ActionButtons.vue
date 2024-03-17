@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { usePuzzleStore } from '@/stores/puzzle';
+import { usePuzzleState } from '@/stores/puzzleState';
+import { useUiState } from '@/stores/uiState';
 
-const puzzle = usePuzzleStore();
+const puzzle = usePuzzleState();
+const uiState = useUiState();
 
 const actionButtons = [
 	{ icon: 'refresh', action: 'restart' },
@@ -13,7 +15,7 @@ const actionButtons = [
 const handleClick = (action: string) => {
 	switch (action) {
 		case 'togglePencil':
-			puzzle.togglePencilMode();
+			uiState.togglePencilMode();
 			break;
 		case 'restart':
 			puzzle.restart();
@@ -31,7 +33,7 @@ const handleClick = (action: string) => {
 <template>
 	<div class="action-buttons">
 		<div v-for="button in actionButtons" :key="button.action" @click="handleClick(button.action)"
-			class="button" :class="{active: button.action === 'togglePencil' && puzzle.pencilMode}">
+			class="button" :class="{active: button.action === 'togglePencil' && uiState.pencilMode}">
 			<div :class="`i-ic:baseline-${button.icon}`"></div>
 		</div>
 	</div>
@@ -67,4 +69,4 @@ const handleClick = (action: string) => {
 	background-color: rgba(var(--foreground), 0.5);
 }
 
-</style>
+</style>@/stores/puzzleState

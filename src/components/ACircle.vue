@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { usePuzzleStore } from '@/stores/puzzle';
+import { useUiState } from '@/stores/uiState';
 import { computed } from 'vue';
 import PossibleDigits from '@/components/PossibleDigits.vue';
 import type { SudokuCell } from '@/types';
@@ -9,17 +9,17 @@ const props = defineProps<{
   clicked: boolean
 }>()
 
-const puzzle = usePuzzleStore()
+const uiState = useUiState()
 
-const selected = computed(() => puzzle.selectedCell === props.cell)
+const selected = computed(() => uiState.selectedCell === props.cell)
 
-const highlightedValue = computed(() => puzzle.highlightedDigit && puzzle.highlightedDigit === props.cell.value)
-const highlightedPossible = computed(() => puzzle.highlightedDigit && props.cell.possibleValues?.includes(puzzle.highlightedDigit))
+const highlightedValue = computed(() => uiState.highlightedDigit && uiState.highlightedDigit === props.cell.value)
+const highlightedPossible = computed(() => uiState.highlightedDigit && props.cell.possibleValues?.includes(uiState.highlightedDigit))
 const highlighted = computed(() => highlightedValue.value || highlightedPossible.value)
 const indicatorActive = computed(() => (highlighted.value || props.cell.isInvalid) && !selected.value)
 
 const animationDelay = computed(() => {
-  if (props.clicked || puzzle.selectedCell) return '0ms'
+  if (props.clicked || uiState.selectedCell) return '0ms'
   return `${Math.floor(Math.random() * 300)}ms`
 })
 

@@ -1,30 +1,32 @@
 <script setup lang="ts">
-import { usePuzzleStore } from '@/stores/puzzle';
+import { usePuzzleState } from '@/stores/puzzleState';
 import ACircle from '@/components/ACircle.vue';
 import type { Candidate, SudokuCell } from '@/types'
 import { ref } from 'vue';
 import { useGameState } from '@/stores/gameState';
+import { useUiState } from '@/stores/uiState';
 
-const puzzle = usePuzzleStore();
+const puzzle = usePuzzleState();
 const gameState = useGameState()
+const uiState = useUiState()
 
 puzzle.initBoard()
 
 const clickedCell = ref<null | SudokuCell>(null) 
 
 const handleGivenCellClick = (cell: SudokuCell) => {
-  if (puzzle.selectedDigit !== null) return
-  puzzle.selectedCell = null;
-  puzzle.highlightDigit(cell.value as Candidate);
+  if (uiState.selectedDigit !== null) return
+  uiState.selectedCell = null;
+  uiState.highlightDigit(cell.value as Candidate);
 }
 
 const handleEditableCellClick = (cell: SudokuCell) => {
-  if (puzzle.selectedDigit && puzzle.pencilMode) {
-    puzzle.updatePossibleValues(cell, puzzle.selectedDigit);
-  } else if (puzzle.selectedDigit === null) {
-    puzzle.selectCell(cell);
+  if (uiState.selectedDigit && uiState.pencilMode) {
+    puzzle.updatePossibleValues(cell, uiState.selectedDigit);
+  } else if (uiState.selectedDigit === null) {
+    uiState.selectCell(cell);
   } else {
-    puzzle.updateCell(cell, puzzle.selectedDigit);
+    puzzle.updateCell(cell, uiState.selectedDigit);
   }
 }
 
@@ -146,4 +148,4 @@ const handleClick = (cell: SudokuCell) => {
   opacity: 1;
   transition-delay: 1s;
 }
-</style>
+</style>@/stores/puzzleState

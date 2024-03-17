@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { Sudoku } from '@/sudoku'
 import type { SudokuCell, Digit, Candidate } from '@/types'
 import { useGameState } from './gameState'
+import { useUiState } from './uiState'
 
 function cloneBoard(board: SudokuCell[][]) {
   return board.map((row) =>
@@ -11,20 +12,16 @@ function cloneBoard(board: SudokuCell[][]) {
 
 const sudoku = new Sudoku()
 
-export const usePuzzleStore = defineStore('puzzle', {
+export const usePuzzleState = defineStore('puzzle', {
   state: () => ({
     board: [] as SudokuCell[][],
-    selectedCell: null as SudokuCell | null,
-    selectedDigit: null as Digit | null,
-    highlightedDigit: null as Candidate | null,
-    pencilMode: false,
-    snapshots: [] as SudokuCell[][][],
+    snapshots: [] as SudokuCell[][][]
   }),
 
   getters: {
     numOfBlankCells: (state) => state.board.flat().filter((cell) => !cell.value).length,
     numOfRemaining: (state) => (digit: Candidate) =>
-      9 - state.board.flat().filter((cell) => cell.value === digit).length,
+      9 - state.board.flat().filter((cell) => cell.value === digit).length
   },
 
   actions: {
@@ -35,19 +32,6 @@ export const usePuzzleStore = defineStore('puzzle', {
         row.map((value) => ({ value, isGiven: value !== 0 }))
       ) as SudokuCell[][]
       this.createSnapshot(this.board)
-    },
-
-    selectCell(cell: SudokuCell) {
-      this.selectedCell = this.selectedCell === cell ? null : cell
-      this.highlightDigit(cell.value)
-    },
-
-    selectDigit(digit: Digit) {
-      this.selectedDigit = this.selectedDigit === digit ? null : digit
-    },
-
-    highlightDigit(digit: Digit) {
-      this.highlightedDigit = this.highlightedDigit === digit || !digit ? null : digit
     },
 
     updateCell(cell: SudokuCell, value: Digit) {
@@ -64,10 +48,6 @@ export const usePuzzleStore = defineStore('puzzle', {
       }
 
       this.createSnapshot(this.board)
-    },
-
-    togglePencilMode() {
-      this.pencilMode = !this.pencilMode
     },
 
     updatePossibleValues(cell: SudokuCell, value: Digit) {
@@ -125,7 +105,8 @@ export const usePuzzleStore = defineStore('puzzle', {
     },
 
     validate() {
-      this.selectedCell = null
+      const uiState = useUiState()
+      uiState.reset()
       this.board = sudoku.validatePuzzle(this.board)
     },
 
@@ -133,19 +114,13 @@ export const usePuzzleStore = defineStore('puzzle', {
       const solution = this.board.map((row) => row.map((cell) => cell.value))
       const isCorrect = sudoku.checkSolution(solution)
       if (isCorrect) {
-        this.resetState()
+        const uiState = useUiState()
+        uiState.reset()
+        // reset snapshots here or on initBoard
         const gameState = useGameState()
         gameState.stopTimer()
         gameState.isSolved = true
       }
-    },
-
-    resetState() {
-      this.selectedCell = null
-      this.selectedDigit = null
-      this.highlightedDigit = null
-      this.pencilMode = false
-      this.snapshots = []
     }
   }
 })

@@ -1,28 +1,30 @@
 <script setup lang="ts">
 import type { Digit } from '@/types';
-import { usePuzzleStore } from '@/stores/puzzle';
+import { usePuzzleState } from '@/stores/puzzleState';
+import { useUiState } from '@/stores/uiState';
 
-const puzzle = usePuzzleStore();
+const puzzle = usePuzzleState();
+const uiState = useUiState();
 const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0] as const;
 
 const handleClick = (digit: Digit) => {
-	if (puzzle.selectedCell && puzzle.pencilMode) {
-		puzzle.updatePossibleValues(puzzle.selectedCell, digit)
+	if (uiState.selectedCell && uiState.pencilMode) {
+		puzzle.updatePossibleValues(uiState.selectedCell, digit)
 		return
 	}
-	puzzle.highlightDigit(digit);
-	if (puzzle.selectedCell) {
-		puzzle.updateCell(puzzle.selectedCell, digit);
+	uiState.highlightDigit(digit);
+	if (uiState.selectedCell) {
+		puzzle.updateCell(uiState.selectedCell, digit);
 		return
 	}
-	puzzle.selectDigit(digit);
+	uiState.selectDigit(digit);
 }
 </script>
 
 <template>
 	<div class="num-buttons">
 		<div v-for="digit in digits" :key="digit" @click="handleClick(digit)" class="button"
-			:class="{ selected: puzzle.selectedDigit === digit }">
+			:class="{ selected: uiState.selectedDigit === digit }">
 			{{ digit ? digit : 'X' }}
 			<span v-if="digit">{{ puzzle.numOfRemaining(digit) || '' }}</span>
 		</div>
@@ -70,4 +72,4 @@ span {
 	line-height: 1.4;
 	bottom: 0;
 }
-</style>
+</style>@/stores/puzzleState
