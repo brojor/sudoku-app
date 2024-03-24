@@ -10,8 +10,6 @@ const puzzle = usePuzzleState();
 const gameState = useGameState()
 const uiState = useUiState()
 
-puzzle.initBoard()
-
 const clickedCell = ref<null | SudokuCell>(null) 
 
 const handleGivenCellClick = (cell: SudokuCell) => {
@@ -46,7 +44,7 @@ const handleClick = (cell: SudokuCell) => {
   <div class="wrapper">
     <div class="time">{{ gameState.formatedTime }}</div>
     <div class="board">
-      <template v-for="(row, rowIdx) in puzzle.board">
+      <template v-for="(row, rowIdx) in puzzle.boards[gameState.difficulty]">
         <div v-for="(cell, colIdx) in row" :key="`cell-${rowIdx}-${colIdx}`" class="cell" :row="rowIdx + 1"
           :col="colIdx + 1">
           <ACircle :cell="cell" @click="handleClick(cell)"

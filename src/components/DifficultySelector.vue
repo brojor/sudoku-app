@@ -24,7 +24,8 @@ const gameState = useGameState();
 	align-items: center;
 	width: 75%;
 	margin: 0 auto;
-	margin-top: 5vh;
+	margin-top: 7vh;
+	margin-bottom: 1vh;
 }
 
 button {

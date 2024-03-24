@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { Sudoku } from '@/sudoku'
 import type { SudokuCell, Digit, Candidate } from '@/types'
+import type { Difficulty } from '@/sudoku'
 import { useGameState } from './gameState'
 import { useUiState } from './uiState'
 
@@ -14,24 +15,38 @@ const sudoku = new Sudoku()
 
 export const usePuzzleState = defineStore('puzzle', {
   state: () => ({
-    board: [] as SudokuCell[][],
-    snapshots: [] as SudokuCell[][][]
+    boards: {
+      beginner: [],
+      easy: [],
+      medium: [],
+      hard: [],
+      extreme: []
+    } as Record<Difficulty, SudokuCell[][]>,
+    snapshots: {
+      beginner: [],
+      easy: [],
+      medium: [],
+      hard: [],
+      extreme: []
+    } as Record<Difficulty, SudokuCell[][][]>
   }),
 
   getters: {
-    numOfBlankCells: (state) => state.board.flat().filter((cell) => !cell.value).length,
+    numOfBlankCells: (state) =>
+      state.boards[useGameState().difficulty].flat().filter((cell) => cell.value === 0).length,
     numOfRemaining: (state) => (digit: Candidate) =>
-      9 - state.board.flat().filter((cell) => cell.value === digit).length
+      9 -
+      state.boards[useGameState().difficulty].flat().filter((cell) => cell.value === digit).length
   },
 
   actions: {
     initBoard() {
       const gameState = useGameState()
       const initialBoard = sudoku.createPuzzle(gameState.difficulty)
-      this.board = initialBoard.map((row) =>
+      this.boards[useGameState().difficulty] = initialBoard.map((row) =>
         row.map((value) => ({ value, isGiven: value !== 0 }))
       ) as SudokuCell[][]
-      this.createSnapshot(this.board)
+      this.createSnapshot(this.boards[useGameState().difficulty])
     },
 
     updateCell(cell: SudokuCell, value: Digit) {
@@ -47,7 +62,7 @@ export const usePuzzleState = defineStore('puzzle', {
         this.checkSolution()
       }
 
-      this.createSnapshot(this.board)
+      this.createSnapshot(this.boards[useGameState().difficulty])
     },
 
     updatePossibleValues(cell: SudokuCell, value: Digit) {
@@ -59,7 +74,7 @@ export const usePuzzleState = defineStore('puzzle', {
         cell.possibleValues = [value]
       }
 
-      this.createSnapshot(this.board)
+      this.createSnapshot(this.boards[useGameState().difficulty])
     },
 
     togglePossibleValue(cell: SudokuCell, value: Candidate) {
@@ -72,7 +87,7 @@ export const usePuzzleState = defineStore('puzzle', {
     },
 
     removePossibleValues(cell: SudokuCell, value: Candidate) {
-      const cellIndex = this.board.flat().indexOf(cell)
+      const cellIndex = this.boards[useGameState().difficulty].flat().indexOf(cell)
       const row = Math.floor(cellIndex / 9)
       const col = cellIndex % 9
 
@@ -82,36 +97,42 @@ export const usePuzzleState = defineStore('puzzle', {
         }
       }
 
-      Sudoku.iterateOverRow(this.board, row, removeValue)
-      Sudoku.iterateOverColumn(this.board, col, removeValue)
-      Sudoku.iterateOverBox(this.board, row, col, removeValue)
+      Sudoku.iterateOverRow(this.boards[useGameState().difficulty], row, removeValue)
+      Sudoku.iterateOverColumn(this.boards[useGameState().difficulty], col, removeValue)
+      Sudoku.iterateOverBox(this.boards[useGameState().difficulty], row, col, removeValue)
     },
 
     restart() {
-      this.board = this.board.map((row) =>
+      this.boards[useGameState().difficulty] = this.boards[useGameState().difficulty].map((row) =>
         row.map(({ value, isGiven }) => ({ value: isGiven ? value : 0, isGiven }))
       )
     },
 
     createSnapshot(board: SudokuCell[][]) {
-      this.snapshots.push(cloneBoard(board))
+      this.snapshots[useGameState().difficulty].push(cloneBoard(board))
     },
 
     undo() {
-      if (this.snapshots.length > 1) {
-        this.snapshots.pop()
-        this.board = cloneBoard(this.snapshots[this.snapshots.length - 1])
+      const snapshots = this.snapshots[useGameState().difficulty]
+ 
+      if (snapshots.length > 1) {
+        snapshots.pop()
+        this.boards[useGameState().difficulty] = cloneBoard(snapshots[snapshots.length - 1])
       }
     },
 
     validate() {
       const uiState = useUiState()
       uiState.reset()
-      this.board = sudoku.validatePuzzle(this.board)
+      this.boards[useGameState().difficulty] = sudoku.validatePuzzle(
+        this.boards[useGameState().difficulty]
+      )
     },
 
     checkSolution() {
-      const solution = this.board.map((row) => row.map((cell) => cell.value))
+      const solution = this.boards[useGameState().difficulty].map((row) =>
+        row.map((cell) => cell.value)
+      )
       const isCorrect = sudoku.checkSolution(solution)
       if (isCorrect) {
         const uiState = useUiState()
