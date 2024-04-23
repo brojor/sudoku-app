@@ -32,12 +32,6 @@ export class Sudoku {
   puzzle: Digit[][] = []
   numOfSolutions = 0
 
-  constructor() {
-    this.createBoard()
-    this.createSolution()
-    // this.createPuzzle('extreme')
-  }
-
   createBoard() {
     this.solution = Array.from({ length: 9 }, () => Array(9).fill(0))
   }
@@ -100,6 +94,9 @@ export class Sudoku {
   }
 
   createPuzzle(difficulty: Difficulty): number[][] {
+    this.createBoard()
+    this.createSolution()
+
     let numberOfCellsToRemove = difficultyMap[difficulty]
 
     this.puzzle = this.solution.map((row) => [...row])
